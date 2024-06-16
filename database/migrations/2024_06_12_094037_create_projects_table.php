@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('image_path')->nullable();
             $table->timestamp('due_date')->nullable();
             $table->enum('status', ['pending', 'in_progress', 'completed']);
-            $table->enum('priority', ['low', 'medium', 'high', 'highest']);
             $table->foreignId('created_by')->constrained("users");
             $table->foreignId('updated_by')->constrained("users");
             $table->timestamps();
