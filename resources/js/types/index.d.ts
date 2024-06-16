@@ -7,7 +7,13 @@ export interface User {
 
 export type PublicUser = Omit<User, "email_verified_at">;
 
-export interface Project {
+export interface Projects {
+  data: ProjectData[];
+  links: NavigationLinks;
+  meta: Meta;
+}
+
+export interface ProjectData {
   id: number;
   name: string;
   description: string;
@@ -19,13 +25,35 @@ export interface Project {
   updatedBy: PublicUser;
 }
 
+export interface NavigationLinks {
+  first: string;
+  last: string;
+  prev: string;
+  next: string;
+}
+
+export interface Meta {
+  current_page: number;
+  from: number;
+  last_page: number;
+  links: MetaLink[];
+  path: string;
+  per_page: number;
+  to: number;
+  total: number;
+}
+
+export interface MetaLink {
+  url: null | string;
+  label: string;
+  active: boolean;
+}
+
 export type PageProps<
   T extends Record<string, unknown> = Record<string, unknown>
 > = T & {
   auth: {
     user: User;
   };
-  projects: {
-    data: Project[];
-  };
+  projects: Projects;
 };
