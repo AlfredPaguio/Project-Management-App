@@ -18,15 +18,15 @@ class TaskFactory extends Factory
     {
         return [
             'name' => fake()->sentence(),
-            'description'=> fake()->realText(),
-            'image_path'=> fake()->imageUrl(),
-            'due_date'=> fake()->sentence(),
-            $table->enum('status', ['pending', 'in_progress', 'completed']);
-            $table->enum('priority', ['low', 'medium', 'high', 'highest']);
-            $table->foreignId('assigned_user_id')->constrained("users");
-            $table->foreignId('created_by')->constrained("users");
-            $table->foreignId('updated_by')->constrained("users");
-            $table->foreignId('project_id')->constrained("projects");
+            'description' => fake()->realText(),
+            'image_path' => fake()->imageUrl(),
+            'due_date' => fake()->dateTimeBetween('now', '+1 year'),
+            'status' => fake()->randomElement(['pending', 'in_progress', 'completed']),
+            'priority' => fake()->randomElement(['low', 'medium', 'high', 'highest']),
+            'assigned_user_id' => 1,
+            'created_by' => 1,
+            'updated_by' => 1,
+            'project_id' => 1,
         ];
     }
 }
