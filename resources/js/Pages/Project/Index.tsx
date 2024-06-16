@@ -1,9 +1,10 @@
+import Pagination from "@/Components/Pagination";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { PageProps, Project } from "@/types";
+import { PageProps, ProjectData } from "@/types";
 import { Head, Link, router } from "@inertiajs/react";
 
 function Index({ auth, projects }: PageProps) {
-  const deleteProject = (project: Project) => {
+  const deleteProject = (project: ProjectData) => {
     if (!window.confirm(`Are you sure you want to delete "${project.name}?"`)) {
       return;
     }
@@ -21,6 +22,7 @@ function Index({ auth, projects }: PageProps) {
     >
       <Head title="Projects" />
 
+      {/* <pre>{JSON.stringify(projects, undefined, 2)}</pre> */}
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -46,7 +48,11 @@ function Index({ auth, projects }: PageProps) {
                     >
                       <td className="px-3 py-2">{project.id}</td>
                       <td className="px-3 py-2">
-                        <img src={project.image_path} style={{ width: 60 }} />
+                        <img
+                          src={project.image_path}
+                          style={{ width: 60 }}
+                          loading="lazy"
+                        />
                       </td>
                       <th className="px-3 py-2 text-gray-100 text-nowrap hover:underline">
                         <Link href={route("project.show", project.id)}>
@@ -84,6 +90,7 @@ function Index({ auth, projects }: PageProps) {
                 </tbody>
               </table>
             </div>
+            <Pagination links={projects.meta.links} />
           </div>
         </div>
       </div>
