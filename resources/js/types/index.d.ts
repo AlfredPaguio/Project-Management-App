@@ -56,7 +56,11 @@ export type PageProps<
     user: User;
   };
   flash: {
-    message: string;
+    message?: string;
   };
   projects: Projects;
+  ziggy: {
+    location: string | null;
+    query: Record<string, any>;
+  };
 };

@@ -15,9 +15,21 @@ class ProjectController extends Controller
     public function index()
     {
         $query = Project::query();
+        if (request("name")) {
+            $query->where("name", "like", "%" . request("name") . "%");
+        }
+        if (request("status")) {
+            $query->where("status", request("status"));
+        }
+        $field = request("field", 'created_at');
+        $sort = request("sort", "desc");
+
+        // session()->flash('message', 'This is a flash message.');
         //https://laravel.com/docs/11.x/pagination#adjusting-the-pagination-link-window
-        $projects = $query->paginate(10)->onEachSide(1);
-        return inertia("Project/Index", ["projects" => ProjectResource::collection($projects)]);
+        $projects = $query->orderBy($field, $sort)->paginate(10)->onEachSide(1);
+        return inertia("Project/Index", [
+            "projects" => ProjectResource::collection($projects),
+        ]);
     }
 
     /**

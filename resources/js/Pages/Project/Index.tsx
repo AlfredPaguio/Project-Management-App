@@ -1,9 +1,47 @@
 import Pagination from "@/Components/Pagination";
+import SelectInput from "@/Components/SelectInput";
+import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { STATUS } from "@/constant";
 import { PageProps, ProjectData } from "@/types";
+import { getQuery } from "@/utils/getQuery";
+import { getStatusLabel } from "@/utils/getStatusLabel";
 import { Head, Link, router } from "@inertiajs/react";
+import { useCallback, useState } from "react";
 
-function Index({ auth, projects }: PageProps) {
+interface QueryParams {
+  sort?: string;
+  field?: string;
+  name?: string;
+  status?: string;
+}
+
+interface ProjectPageProps {
+  queryParams?: QueryParams | null;
+}
+
+function Index({ auth, projects }: PageProps & ProjectPageProps) {
+  const [queryParamsState, setQueryParamsState] = useState<QueryParams>({
+    sort: getQuery("sort"),
+    field: getQuery("field"),
+    name: getQuery("name"),
+    status: getQuery("status"),
+  });
+
+  const onChangeSearchField = useCallback(
+    (name: keyof QueryParams, value: string) => {
+      const updatedParams = { ...queryParamsState, [name]: value || undefined };
+      if (!value || value == null) {
+        delete updatedParams[name];
+      }
+      setQueryParamsState(updatedParams);
+      router.visit(route("project.index", updatedParams), {
+        replace: true,
+      });
+    },
+    [queryParamsState]
+  );
+
   const deleteProject = (project: ProjectData) => {
     if (!window.confirm(`Are you sure you want to delete "${project.name}?"`)) {
       return;
@@ -40,6 +78,42 @@ function Index({ auth, projects }: PageProps) {
                     <th className="p-3 text-right">Actions</th>
                   </tr>
                 </thead>
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
+                  <tr className="text-nowrap">
+                    <th className="px-3 py-3"></th>
+                    <th className="px-3 py-3"></th>
+                    <th className="px-3 py-3">
+                      <TextInput
+                        className="w-full"
+                        value={queryParamsState?.name}
+                        placeholder="Project Name"
+                        onChange={(e) =>
+                          onChangeSearchField("name", e.target.value)
+                        }
+                      />
+                    </th>
+                    <th className="px-3 py-3">
+                      <SelectInput
+                        className="w-full"
+                        value={queryParamsState?.status}
+                        onChange={(e) =>
+                          onChangeSearchField("status", e.target.value)
+                        }
+                      >
+                        <option value="">Select Status</option>
+                        {Object.keys(STATUS).map((key) => (
+                          <option key={key} value={key}>
+                            {getStatusLabel(key)}
+                          </option>
+                        ))}
+                      </SelectInput>
+                    </th>
+                    <th className="px-3 py-3"></th>
+                    <th className="px-3 py-3"></th>
+                    <th className="px-3 py-3"></th>
+                    <th className="px-3 py-3"></th>
+                  </tr>
+                </thead>
                 <tbody>
                   {projects.data.map((project) => (
                     <tr
@@ -61,7 +135,7 @@ function Index({ auth, projects }: PageProps) {
                       </th>
                       <td className="px-3 py-2">
                         <span className={"px-2 py-1 rounded text-white"}>
-                          {project.status}
+                          {getStatusLabel(project.status)}
                         </span>
                       </td>
                       <td className="px-3 py-2 text-nowrap">
