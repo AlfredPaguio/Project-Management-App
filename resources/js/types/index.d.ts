@@ -8,12 +8,12 @@ export interface User {
 export type PublicUser = Omit<User, "email_verified_at">;
 
 export interface Projects {
-  data: ProjectData[];
+  data: ProjectDataType[];
   links: NavigationLinks;
   meta: Meta;
 }
 
-export interface ProjectData {
+export interface ProjectDataType {
   id: number;
   name: string;
   description: string;
