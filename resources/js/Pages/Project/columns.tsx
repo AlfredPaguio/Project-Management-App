@@ -1,8 +1,21 @@
 "use client";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/Components/ui/alert-dialog";
+import { Badge } from "@/Components/ui/badge";
 import { Button } from "@/Components/ui/button";
 import { Checkbox } from "@/Components/ui/checkbox";
 import { ProjectDataType } from "@/types";
+import { getStatusLabel } from "@/utils/getStatusLabel";
 import { Link } from "@inertiajs/react";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
@@ -11,21 +24,25 @@ export const columns: ColumnDef<ProjectDataType>[] = [
   {
     id: "select",
     header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
+      <div className="flex items-center justify-center flex-col">
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      </div>
     ),
     cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
+      <div className="flex items-center justify-center">
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      </div>
     ),
     enableSorting: false,
     enableHiding: false,
@@ -37,6 +54,11 @@ export const columns: ColumnDef<ProjectDataType>[] = [
   {
     accessorKey: "image_path",
     header: "Image",
+    cell: ({ row }) => {
+      const image_path = String(row.getValue("image_path"));
+
+      return <img src={image_path} className="w-60" loading="lazy" />;
+    },
   },
   {
     accessorKey: "name",
@@ -45,6 +67,12 @@ export const columns: ColumnDef<ProjectDataType>[] = [
   {
     accessorKey: "status",
     header: "Status",
+    cell: ({ row }) => {
+      const statusLabel = String(row.getValue("status"));
+      const formatted = getStatusLabel(statusLabel);
+
+      return <Badge className="text-nowrap">{formatted}</Badge>;
+    },
   },
   {
     accessorKey: "created_at",
@@ -57,6 +85,16 @@ export const columns: ColumnDef<ProjectDataType>[] = [
           Creation Date
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const date = new Date(row.getValue("created_at"));
+      const formattedDate = new Intl.DateTimeFormat(undefined).format(date);
+
+      return (
+        <div className="text-center">
+          <time dateTime={formattedDate}>{formattedDate}</time>
+        </div>
       );
     },
   },
@@ -73,6 +111,16 @@ export const columns: ColumnDef<ProjectDataType>[] = [
         </Button>
       );
     },
+    cell: ({ row }) => {
+      const date = new Date(row.getValue("due_date"));
+      const formattedDate = new Intl.DateTimeFormat(undefined).format(date);
+
+      return (
+        <div className="text-center">
+          <time dateTime={formattedDate}>{formattedDate}</time>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "createdBy.name",
@@ -82,7 +130,7 @@ export const columns: ColumnDef<ProjectDataType>[] = [
     accessorKey: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const project = row.original
+      const project = row.original;
 
       return (
         <div className="flex items-center justify-center">
@@ -92,10 +140,29 @@ export const columns: ColumnDef<ProjectDataType>[] = [
               <Pencil className="ml-2 size-4" />
             </Link>
           </Button>
-          <Button variant="destructive">
-            Delete
-            <Trash2 className="ml-2 size-4" />
-          </Button>
+          <AlertDialog>
+            <Button variant="destructive" asChild>
+              <AlertDialogTrigger>
+                Delete <Trash2 className="ml-2 size-4" />
+              </AlertDialogTrigger>
+            </Button>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription className="whitespace-pre-line">
+                  {`Are you sure you want to delete "${project.name}?"
+                  This action cannot be undone. This will permanently delete your account
+                  and remove your data from our servers.`}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction asChild>
+                  <Link href={route("project.destroy", project.id)} method="delete" as="button" type="button">Continue</Link>
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       );
     },
