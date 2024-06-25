@@ -1,7 +1,19 @@
 "use client";
 
 import DataTablePagination from "@/Components/DataTablePagination";
+import { Badge } from "@/Components/ui/badge";
+import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+} from "@/Components/ui/select";
 import {
   Table,
   TableBody,
@@ -10,17 +22,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/Components/ui/table";
+import { getStatusLabel } from "@/utils/getStatusLabel";
 import {
   ColumnDef,
   ColumnFiltersState,
   SortingState,
   flexRender,
   getCoreRowModel,
+  getFacetedUniqueValues,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { Trash } from "lucide-react";
 import { useState } from "react";
 
 interface DataTableProps<TData, TValue> {
@@ -46,6 +61,7 @@ export function DataTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onRowSelectionChange: setRowSelection,
+    getFacetedUniqueValues: getFacetedUniqueValues(),
     state: {
       sorting,
       columnFilters,
@@ -56,20 +72,62 @@ export function DataTable<TData, TValue>({
   return (
     <div className="flex flex-col items-center">
       <div className="flex flex-1 md:flex-row items-center p-4 justify-between w-full">
-        <Input
-          placeholder="Filter name..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+        <div className="flex items-center justify-center w-fit">
+          <Input
+            placeholder="Filter name..."
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("name")?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+          />
+          <Select
+            onValueChange={(value) =>
+              table.getColumn("status")?.setFilterValue(value)
+            }
+            value={
+              (table.getColumn("status")?.getFilterValue() as string) ?? ""
+            }
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Status</SelectLabel>
+                {Array.from(
+                  table
+                    .getColumn("status")
+                    ?.getFacetedUniqueValues()
+                    ?.entries() || []
+                ).map(([key, value]) => (
+                  <SelectItem key={key} value={key}>
+                    {getStatusLabel(key)} <Badge>{value}</Badge>
+                  </SelectItem>
+                ))}
+                <SelectSeparator />
+                <Button
+                  className="w-full px-2 gap-x-2 flex items-center justify-center"
+                  variant="destructive"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    table.getColumn("status")?.setFilterValue(undefined);
+                  }}
+                >
+                  <Trash className="size-4" />
+                  Clear Selection
+                </Button>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
         <div className="text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
       </div>
-      <div className="rounded-md border">
+      <div className="rounded-md border w-full">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
