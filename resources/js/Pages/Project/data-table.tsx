@@ -1,7 +1,6 @@
 "use client";
 
 import DataTablePagination from "@/Components/DataTablePagination";
-import { Badge } from "@/Components/ui/badge";
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
 import {
@@ -67,6 +66,7 @@ export function DataTable<TData, TValue>({
       columnFilters,
       rowSelection,
     },
+    debugTable: true,
   });
 
   return (
@@ -100,9 +100,9 @@ export function DataTable<TData, TValue>({
                     .getColumn("status")
                     ?.getFacetedUniqueValues()
                     ?.entries() || []
-                ).map(([key, value]) => (
+                ).map(([key, _]) => (
                   <SelectItem key={key} value={key}>
-                    {getStatusLabel(key)} <Badge>{value}</Badge>
+                    {getStatusLabel(key)}
                   </SelectItem>
                 ))}
                 <SelectSeparator />
@@ -128,7 +128,7 @@ export function DataTable<TData, TValue>({
         </div>
       </div>
       <div className="rounded-md border w-full">
-        <Table>
+        <Table key={table.getPageCount()}>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -177,7 +177,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+      <DataTablePagination table={table} key={table.getPageCount()}/>
     </div>
   );
 }
