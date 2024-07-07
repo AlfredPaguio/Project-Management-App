@@ -1,3 +1,6 @@
+import { Projects } from "./project";
+import { Tasks } from "./task";
+
 export interface User {
   id: number;
   name: string;
@@ -6,24 +9,6 @@ export interface User {
 }
 
 export type PublicUser = Omit<User, "email_verified_at">;
-
-export interface Projects {
-  data: ProjectDataType[];
-  links: NavigationLinks;
-  meta: Meta;
-}
-
-export interface ProjectDataType {
-  id: number;
-  name: string;
-  description: string;
-  image_path: string;
-  created_at: Date;
-  due_date: Date;
-  status: string;
-  createdBy: PublicUser;
-  updatedBy: PublicUser;
-}
 
 export interface NavigationLinks {
   first: string;
@@ -59,6 +44,7 @@ export type PageProps<
     message?: string;
   };
   projects: Projects;
+  tasks: Tasks;
   ziggy: {
     location: string | null;
     query: Record<string, any>;
