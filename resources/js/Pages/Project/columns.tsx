@@ -63,6 +63,19 @@ export const columns: ColumnDef<ProjectDataType>[] = [
   {
     accessorKey: "name",
     header: "Name",
+    cell: ({ row }) => {
+      const project = row.original;
+
+      return (
+        <div className="flex items-center justify-center">
+          <Button variant={"link"} asChild>
+            <Link href={route("project.show", project.id)}>
+              {project.name}
+            </Link>
+          </Button>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "status",
@@ -158,7 +171,14 @@ export const columns: ColumnDef<ProjectDataType>[] = [
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction asChild>
-                  <Link href={route("project.destroy", project.id)} method="delete" as="button" type="button">Continue</Link>
+                  <Link
+                    href={route("project.destroy", project.id)}
+                    method="delete"
+                    as="button"
+                    type="button"
+                  >
+                    Continue
+                  </Link>
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
