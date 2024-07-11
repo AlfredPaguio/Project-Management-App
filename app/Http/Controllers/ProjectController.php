@@ -6,6 +6,7 @@ use App\Models\Project;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Http\Resources\ProjectResource;
+use App\Http\Resources\TaskResource;
 
 class ProjectController extends Controller
 {
@@ -42,8 +43,10 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
+        $tasks = $project->tasks()->orderBy('id', 'desc')->all();
         return inertia("Project/Show", [
             "project" => new ProjectResource($project),
+            "tasks" => TaskResource::collection($tasks),
         ]);
     }
 
