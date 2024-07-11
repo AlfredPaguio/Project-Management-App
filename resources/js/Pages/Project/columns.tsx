@@ -49,7 +49,17 @@ export const columns: ColumnDef<ProjectDataType>[] = [
   },
   {
     accessorKey: "id",
-    header: "ID",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          ID
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
   },
   {
     accessorKey: "image_path",
@@ -69,9 +79,7 @@ export const columns: ColumnDef<ProjectDataType>[] = [
       return (
         <div className="flex items-center justify-center">
           <Button variant={"link"} asChild>
-            <Link href={route("project.show", project.id)}>
-              {project.name}
-            </Link>
+            <Link href={route("project.show", project.id)}>{project.name}</Link>
           </Button>
         </div>
       );
