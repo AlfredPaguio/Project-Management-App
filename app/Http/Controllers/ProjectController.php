@@ -43,7 +43,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        $tasks = $project->tasks()->orderBy('id', 'desc')->all();
+        $tasks = $project->tasks()->orderBy('id', 'desc')->get();
         return inertia("Project/Show", [
             "project" => new ProjectResource($project),
             "tasks" => TaskResource::collection($tasks),
