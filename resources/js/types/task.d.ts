@@ -13,7 +13,9 @@ export interface TaskDataType {
   image_path: string;
   created_at: Date;
   due_date: Date;
-  status: string;
+  status: 'pending' | 'in_progress' | 'completed' | 'cancelled';
+  priority: 'low' | 'medium' | 'high' | 'highest';
   createdBy: PublicUser;
   updatedBy: PublicUser;
+  assignedUser: PublicUser;
 }

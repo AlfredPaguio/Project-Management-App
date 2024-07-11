@@ -13,7 +13,7 @@ export interface ProjectDataType {
   image_path: string;
   created_at: Date;
   due_date: Date;
-  status: string;
+  status: 'pending' | 'in_progress' | 'completed' | 'cancelled';
   createdBy: PublicUser;
   updatedBy: PublicUser;
 }
