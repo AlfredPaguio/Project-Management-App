@@ -7,9 +7,9 @@ export enum Status_Enum {
 }
 
 export const STATUS = {
-  pending: "Pending",
-  in_progress: "In Progress",
   completed: "Completed",
+  in_progress: "In Progress",
+  pending: "Pending",
   cancelled: "Cancelled",
   unknown_status: "Unknown Status",
 } as const;
