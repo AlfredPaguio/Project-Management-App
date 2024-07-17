@@ -1,6 +1,6 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { PageProps } from "@/types";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -36,13 +36,37 @@ import { STATUS } from "@/constant";
 import { Textarea } from "@/Components/ui/textarea";
 import { useState } from "react";
 import { getImageData } from "@/utils/getImageData";
+import { sizeInMB } from "@/utils/fileSizeUtils";
+
+const MAX_IMAGE_SIZE = 4; //In MegaBytes
+const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
 
 const formSchema = z.object({
   name: z.string().min(2),
-  image: z.string().min(2),
+  image: z
+    .custom<FileList>()
+    // .refine((files) => {
+    //   return Array.from(files ?? []).length !== 0;
+    // }, "Image is required")
+    .optional()
+    .refine((files) => {
+      return Array.from(files ?? []).every(
+        (file) => sizeInMB(file.size) <= MAX_IMAGE_SIZE
+      );
+    }, `The maximum image size is ${MAX_IMAGE_SIZE}MB`)
+    .refine((files) => {
+      return Array.from(files ?? []).every((file) =>
+        ACCEPTED_IMAGE_TYPES.includes(file.type)
+      );
+    }, "File type is not supported"),
   status: z.enum(["pending", "in_progress", "completed", "cancelled"]),
-  description: z.string().min(2),
-  due_date: z.date(),
+  description: z.string().min(2).optional(),
+  due_date: z.date().optional(),
 });
 
 export default function Create({ auth }: PageProps) {
@@ -53,7 +77,26 @@ export default function Create({ auth }: PageProps) {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    console.log("zod values", values);
+    const formData = new FormData();
+    formData.append("name", values.name);
+    formData.append("status", values.status);
+    if (values.description) {
+      formData.append("description", values.description);
+    }
+    if (values.due_date) {
+      formData.append("due_date", values.due_date.toISOString().split("T")[0]);
+    }
+    if (values.image) {
+      Array.from(values.image).forEach((file, index) => {
+        formData.append(`image[${index}]`, file);
+      });
+    }
+
+    console.log("formData api values", formData);
+
+
+    // router.post("/project/store", formData);
   }
 
   return (
@@ -174,6 +217,9 @@ export default function Create({ auth }: PageProps) {
                           <Calendar
                             mode="single"
                             selected={field.value}
+                            captionLayout="dropdown"
+                            fromYear={2000}
+                            toYear={new Date().getFullYear()}
                             onSelect={field.onChange}
                             disabled={
                               (date) =>
