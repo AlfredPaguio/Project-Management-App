@@ -4,31 +4,26 @@ import Dropdown from "@/Components/Dropdown";
 import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import { Link, usePage } from "@inertiajs/react";
-import { User } from "@/types";
+import { PageProps, User } from "@/types";
 
 interface Props {
   user: User;
   header?: ReactNode;
-  flash?: { message?: string };
 }
 
 export default function Authenticated({
   user,
   header,
   children,
-  flash,
 }: PropsWithChildren<Props>) {
   const [showingNavigationDropdown, setShowingNavigationDropdown] =
     useState(false);
 
+  const { flash } = usePage<PageProps>().props;
+
   return (
     <div className="min-h-screen bg-gray-100">
       <nav className="bg-white border-b border-gray-100">
-        {flash?.message && (
-          <div className="relative w-full rounded-lg border px-4 py-3 text-sm bg-gray-100 text-gray-800">
-            {flash.message}
-          </div>
-        )}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex">
@@ -194,6 +189,12 @@ export default function Authenticated({
             {header}
           </div>
         </header>
+      )}
+
+      {flash?.message && (
+        <div className="relative w-full rounded-lg border px-4 py-3 text-sm bg-background text-primary">
+          {flash.message}
+        </div>
       )}
 
       <main>{children}</main>

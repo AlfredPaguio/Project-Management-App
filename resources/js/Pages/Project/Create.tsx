@@ -77,7 +77,7 @@ export default function Create({ auth }: PageProps) {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("zod values", values);
+    // console.log("zod values", values);
     const formData = new FormData();
     formData.append("name", values.name);
     formData.append("status", values.status);
@@ -93,10 +93,10 @@ export default function Create({ auth }: PageProps) {
       });
     }
 
-    console.log("formData api values", formData);
+    // console.log("formData api values", formData);
 
 
-    // router.post("/project/store", formData);
+    router.post(route("project.store"), formData);
   }
 
   return (
