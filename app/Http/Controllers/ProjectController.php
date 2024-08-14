@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateProjectRequest;
 use App\Http\Resources\ProjectResource;
 use App\Http\Resources\TaskResource;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class ProjectController extends Controller
 {
@@ -44,7 +45,9 @@ class ProjectController extends Controller
         if ($request->hasFile('image')) {
             $imagePaths = [];
             foreach ($request->file('image') as $index => $file) {
-                $imagePath = $file->store('images', 'public');
+
+                $imagePath = $file->store('project/'.Str::random(), 'public');
+                // $imagePath = $file->store('project/'.$data["name"], 'public');
                 $imagePaths[] = $imagePath;
             }
             $data['image_path'] = implode(',', $imagePaths);
