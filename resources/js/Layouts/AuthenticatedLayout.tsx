@@ -5,6 +5,7 @@ import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import { Link, usePage } from "@inertiajs/react";
 import { PageProps, User } from "@/types";
+import FlashMessage from "@/Components/FlashMessage";
 
 interface Props {
   user: User;
@@ -18,8 +19,6 @@ export default function Authenticated({
 }: PropsWithChildren<Props>) {
   const [showingNavigationDropdown, setShowingNavigationDropdown] =
     useState(false);
-
-  const { flash } = usePage<PageProps>().props;
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -191,11 +190,7 @@ export default function Authenticated({
         </header>
       )}
 
-      {flash?.message && (
-        <div className="relative w-full rounded-lg border px-4 py-3 text-sm bg-background text-primary">
-          {flash.message}
-        </div>
-      )}
+      <FlashMessage />
 
       <main>{children}</main>
     </div>

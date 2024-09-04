@@ -40,9 +40,7 @@ export type PageProps<
   auth: {
     user: User;
   };
-  flash: {
-    message?: string;
-  };
+  flash: Record<string, string | undefined>;
   projects: Projects;
   tasks: Tasks;
   ziggy: {
