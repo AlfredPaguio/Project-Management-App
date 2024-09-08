@@ -88,28 +88,14 @@ class ProjectController extends Controller
         $data = $request->validated();
         $data["updated_by"] = Auth::id();
         if ($request->hasFile('image')) {
-            // $oldImages = explode(',', $project->image_path);
-            // foreach ($oldImages as $oldImagePath) {
-            //     if (Storage::disk('public')->exists($oldImagePath)) {
-            //         Storage::disk('public')->delete($oldImagePath);
-            //     }
-            // }
-
-            // $oldImageFolder = 'project/' . Str::after($project->image_path, '/project/');
-
-            // if (Storage::disk('public')->exists($oldImageFolder)) {
-            //     Storage::disk('public')->deleteDirectory($oldImageFolder);
-            // }
-
             $oldImageFolder = Str::between($project->image_path, 'project/', '/');
-            if (Storage::disk('public')->exists("project/".$oldImageFolder)) {
-                Storage::disk('public')->deleteDirectory("project/".$oldImageFolder);
+            if (Storage::disk('public')->exists("project/" . $oldImageFolder)) {
+                Storage::disk('public')->deleteDirectory("project/" . $oldImageFolder);
             }
 
             $imagePaths = [];
             foreach ($request->file('image') as $index => $file) {
                 $imagePath = $file->store('project/' . Str::random(), 'public');
-                // $imagePath = $file->store('project/'.$data["name"], 'public');
                 $imagePaths[] = $imagePath;
             }
             $data['image_path'] = implode(',', $imagePaths);
@@ -144,8 +130,8 @@ class ProjectController extends Controller
         // }
 
         $oldImageFolder = Str::between($image, 'project/', '/');
-        if (Storage::disk('public')->exists("project/".$oldImageFolder)) {
-            Storage::disk('public')->deleteDirectory("project/".$oldImageFolder);
+        if (Storage::disk('public')->exists("project/" . $oldImageFolder)) {
+            Storage::disk('public')->deleteDirectory("project/" . $oldImageFolder);
         }
 
         return to_route("project.index")->with("success", "Project \"$name\" was deleted");

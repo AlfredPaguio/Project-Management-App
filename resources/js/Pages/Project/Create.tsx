@@ -66,7 +66,7 @@ const formSchema = z.object({
     }, "File type is not supported"),
   status: z.enum(["pending", "in_progress", "completed", "cancelled"]),
   description: z.string().min(2).optional(),
-  due_date: z.date().optional(),
+  due_date: z.coerce.date().optional(),
 });
 
 export default function Create({ auth }: PageProps) {
@@ -77,7 +77,6 @@ export default function Create({ auth }: PageProps) {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // console.log("zod values", values);
     const formData = new FormData();
     formData.append("name", values.name);
     formData.append("status", values.status);
@@ -92,9 +91,6 @@ export default function Create({ auth }: PageProps) {
         formData.append(`image[${index}]`, file);
       });
     }
-
-    // console.log("formData api values", formData);
-
 
     router.post(route("project.store"), formData);
   }
