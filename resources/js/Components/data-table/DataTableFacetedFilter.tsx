@@ -97,6 +97,7 @@ function DataTableFacetedFilter<TData, TValue>({
                       column?.setFilterValue(
                         filterValues.length ? filterValues : undefined
                       );
+                      console.log("Filter values:", filterValues);
                     }}
                   >
                     <div

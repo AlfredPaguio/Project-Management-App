@@ -1,10 +1,10 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { PageProps } from "@/types";
 import { Head, Link } from "@inertiajs/react";
-import { DataTable } from "./data-table";
 import { columns } from "./columns";
 import { Button } from "@/Components/ui/button";
 import { Plus } from "lucide-react";
+import { DataTable } from "@/Components/data-table/DataTable";
 
 interface QueryParams {
   sort?: string;
@@ -39,7 +39,7 @@ function Index({ auth, projects }: PageProps & ProjectPageProps) {
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <DataTable columns={columns} data={projects.data} />
+            <DataTable columns={columns} data={projects.data} key={"ProjectTable"}/>
           </div>
         </div>
       </div>

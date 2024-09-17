@@ -18,7 +18,7 @@ import { ProjectDataType } from "@/types/project";
 import { getStatusLabel } from "@/utils/getStatusLabel";
 import { Link } from "@inertiajs/react";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { ArrowUpDown, Pencil, Trash2 } from "lucide-react";
 
 export const columns: ColumnDef<ProjectDataType>[] = [
   {
