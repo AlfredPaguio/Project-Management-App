@@ -1,5 +1,6 @@
 "use client";
 
+import { DataTableRowActions } from "@/Components/data-table/DataTableRowActions";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -94,6 +95,9 @@ export const columns: ColumnDef<ProjectDataType>[] = [
 
       return <Badge className="text-nowrap">{formatted}</Badge>;
     },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
   },
   {
     accessorKey: "created_at",
@@ -154,44 +158,11 @@ export const columns: ColumnDef<ProjectDataType>[] = [
       const project = row.original;
 
       return (
-        <div className="flex items-center justify-center">
-          <Button asChild>
-            <Link href={route("project.edit", project.id)}>
-              Edit
-              <Pencil className="ml-2 size-4" />
-            </Link>
-          </Button>
-          <AlertDialog>
-            <Button variant="destructive" asChild>
-              <AlertDialogTrigger>
-                Delete <Trash2 className="ml-2 size-4" />
-              </AlertDialogTrigger>
-            </Button>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription className="whitespace-pre-line">
-                  {`Are you sure you want to delete "${project.name}?"
-                  This action cannot be undone. This will permanently delete your account
-                  and remove your data from our servers.`}
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction asChild>
-                  <Link
-                    href={route("project.destroy", project.id)}
-                    method="delete"
-                    as="button"
-                    type="button"
-                  >
-                    Continue
-                  </Link>
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </div>
+        <DataTableRowActions
+          name={project.name}
+          editRoute={route("project.edit", project.id)}
+          deleteRoute={route("project.destroy", project.id)}
+        />
       );
     },
   },

@@ -1,5 +1,6 @@
 "use client";
 
+import { DataTableRowActions } from "@/Components/data-table/DataTableRowActions";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -83,6 +84,22 @@ export const columns: ColumnDef<TaskDataType>[] = [
 
       return <Badge className="text-nowrap">{formatted}</Badge>;
     },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
+  },
+  {
+    accessorKey: "priority",
+    header: "Priority",
+    cell: ({ row }) => {
+      const priorityLabel = String(row.getValue("priority"));
+      // const formatted = getStatusLabel(priorityLabel);
+
+      return <Badge className="text-nowrap">{priorityLabel}</Badge>;
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
   },
   {
     accessorKey: "created_at",
@@ -143,44 +160,11 @@ export const columns: ColumnDef<TaskDataType>[] = [
       const task = row.original;
 
       return (
-        <div className="flex items-center justify-center">
-          <Button asChild>
-            <Link href={route("task.edit", task.id)}>
-              Edit
-              <Pencil className="ml-2 size-4" />
-            </Link>
-          </Button>
-          <AlertDialog>
-            <Button variant="destructive" asChild>
-              <AlertDialogTrigger>
-                Delete <Trash2 className="ml-2 size-4" />
-              </AlertDialogTrigger>
-            </Button>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription className="whitespace-pre-line">
-                  {`Are you sure you want to delete "${task.name}?"
-                  This action cannot be undone. This will permanently delete your account
-                  and remove your data from our servers.`}
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction asChild>
-                  <Link
-                    href={route("task.destroy", task.id)}
-                    method="delete"
-                    as="button"
-                    type="button"
-                  >
-                    Continue
-                  </Link>
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </div>
+        <DataTableRowActions
+          name={task.name}
+          editRoute={route("task.edit", task.id)}
+          deleteRoute={route("task.destroy", task.id)}
+        />
       );
     },
   },

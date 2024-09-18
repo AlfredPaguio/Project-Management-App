@@ -16,9 +16,9 @@ import { ProjectDataType } from "@/types/project";
 import { TaskDataType } from "@/types/task";
 import { getStatusLabel } from "@/utils/getStatusLabel";
 import { Head, Link } from "@inertiajs/react";
-import { DataTable as TaskDataTable } from "../Task/data-table";
 import { columns as TaskDataTableColumns } from "../Task/columns";
 import { ArrowLeft, Pencil } from "lucide-react";
+import { DataTable } from "@/Components/data-table/DataTable";
 
 interface ProjectPageProps {
   project: ProjectDataType;
@@ -90,7 +90,7 @@ export default function Show({
             </Card>
             <Separator className="my-4" />
             <div className="p-4">
-              <TaskDataTable columns={TaskDataTableColumns} data={tasks.data} />
+              <DataTable columns={TaskDataTableColumns} data={tasks.data} />
             </div>
           </div>
         </div>
