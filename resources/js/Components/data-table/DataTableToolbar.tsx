@@ -1,4 +1,4 @@
-import { statuses } from "@/constant";
+import { priorities, statuses } from "@/constant";
 import { Table } from "@tanstack/react-table";
 import { XIcon } from "lucide-react";
 import { Button } from "../ui/button";
@@ -29,6 +29,13 @@ function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
             column={table.getColumn("status")}
             title="Status"
             options={statuses}
+          />
+        )}
+        {table.getColumn("priority") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("priority")}
+            title="Priority"
+            options={priorities}
           />
         )}
         {isFiltered && (
