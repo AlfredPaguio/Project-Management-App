@@ -31,9 +31,6 @@ function Index({ auth, users }: PageProps & UserPageProps) {
 
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-          <pre>
-            <code>{JSON.stringify(users, undefined, 2)}</code>
-          </pre>
           <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
             <DataTable columns={columns} data={users.data} key={"UserTable"} />
           </div>
