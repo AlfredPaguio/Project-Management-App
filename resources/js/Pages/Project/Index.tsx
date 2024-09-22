@@ -6,18 +6,7 @@ import { Button } from "@/Components/ui/button";
 import { Plus } from "lucide-react";
 import { DataTable } from "@/Components/data-table/DataTable";
 
-interface QueryParams {
-  sort?: string;
-  field?: string;
-  name?: string;
-  status?: string;
-}
-
-interface ProjectPageProps {
-  queryParams?: QueryParams | null;
-}
-
-function Index({ auth, projects }: PageProps & ProjectPageProps) {
+function Index({ auth, projects }: PageProps) {
   return (
     <AuthenticatedLayout
       user={auth.user}
@@ -39,7 +28,11 @@ function Index({ auth, projects }: PageProps & ProjectPageProps) {
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <DataTable columns={columns} data={projects.data} key={"ProjectTable"}/>
+            <DataTable
+              columns={columns}
+              data={projects.data}
+              key={"ProjectTable"}
+            />
           </div>
         </div>
       </div>

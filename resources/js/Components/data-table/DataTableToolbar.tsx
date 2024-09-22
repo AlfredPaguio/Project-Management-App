@@ -24,14 +24,16 @@ function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
           }
           className="h-8 w-[150px] lg:w-[384px]"
         />
-        {table.getColumn("status") && (
+        {/* {table.getColumn("status") && ( */}
+        {table.getAllColumns().find((x) => x.id === "status") && (
           <DataTableFacetedFilter
             column={table.getColumn("status")}
             title="Status"
             options={statuses}
           />
         )}
-        {table.getColumn("priority") && (
+        {/* {table.getColumn("priority") && ( */}
+        {table.getAllColumns().find((x) => x.id === "priority") && (
           <DataTableFacetedFilter
             column={table.getColumn("priority")}
             title="Priority"
