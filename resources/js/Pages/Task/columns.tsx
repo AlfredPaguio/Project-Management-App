@@ -8,6 +8,7 @@ import { priorities, statuses } from "@/constant";
 import { TaskDataType } from "@/types/task";
 import { cn } from "@/utils/cn";
 import { getLabel } from "@/utils/getLabel";
+import { Link } from "@inertiajs/react";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 
@@ -64,6 +65,16 @@ export const columns: ColumnDef<TaskDataType>[] = [
   {
     accessorKey: "name",
     header: "Name",
+    cell: ({ row }) => {
+      const task = row.original;
+      return (
+        <div className="flex items-center justify-center">
+          <Button variant={"link"} asChild>
+            <Link href={route("task.show", task.id)}>{task.name}</Link>
+          </Button>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "status",

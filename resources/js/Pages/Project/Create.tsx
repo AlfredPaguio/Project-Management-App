@@ -32,7 +32,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/Components/ui/select";
-import { STATUS } from "@/constant";
+import { statuses } from "@/constant";
 import { Textarea } from "@/Components/ui/textarea";
 import { useState } from "react";
 import { getImageData } from "@/utils/getImageData";
@@ -257,9 +257,14 @@ export default function Create({ auth }: PageProps) {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {Object.entries(STATUS).map(([key, value]) => (
-                            <SelectItem key={key} value={key}>
-                              {value}
+                          {Object.entries(statuses).map(([key, status]) => (
+                            <SelectItem key={key} value={status.value}>
+                              <div className="flex">
+                                {status.icon && (
+                                  <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+                                )}
+                                <span>{status.label}</span>
+                              </div>
                             </SelectItem>
                           ))}
                         </SelectContent>

@@ -2,9 +2,8 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { PageProps } from "@/types";
 import { Head, Link, router } from "@inertiajs/react";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { Button } from "@/Components/ui/button";
+import { Calendar } from "@/Components/ui/calendar";
 import {
   Form,
   FormControl,
@@ -14,17 +13,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/Components/ui/form";
-import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
-import { cn } from "@/utils/cn";
-import { format } from "date-fns";
-import { ArrowLeft, CalendarIcon } from "lucide-react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/Components/ui/popover";
-import { Calendar } from "@/Components/ui/calendar";
 import {
   Select,
   SelectContent,
@@ -32,13 +26,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/Components/ui/select";
-import { STATUS } from "@/constant";
 import { Textarea } from "@/Components/ui/textarea";
-import { useState } from "react";
-import { getImageData } from "@/utils/getImageData";
-import { sizeInMB } from "@/utils/fileSizeUtils";
 import { ProjectDataType } from "@/types/project";
 import { TaskDataType } from "@/types/task";
+import { cn } from "@/utils/cn";
+import { sizeInMB } from "@/utils/fileSizeUtils";
+import { getImageData } from "@/utils/getImageData";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
+import { ArrowLeft, CalendarIcon } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { statuses } from "@/constant";
 
 const MAX_IMAGE_SIZE = 4; //In MegaBytes
 const ACCEPTED_IMAGE_TYPES = [
@@ -276,9 +276,14 @@ export default function Edit({ auth, project }: PageProps & ProjectPageProps) {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {Object.entries(STATUS).map(([key, value]) => (
-                            <SelectItem key={key} value={key}>
-                              {value}
+                          {Object.entries(statuses).map(([key, status]) => (
+                            <SelectItem key={key} value={status.value}>
+                              <div className="flex">
+                                {status.icon && (
+                                  <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+                                )}
+                                <span>{status.label}</span>
+                              </div>
                             </SelectItem>
                           ))}
                         </SelectContent>
