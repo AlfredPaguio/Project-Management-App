@@ -6,6 +6,7 @@ import { Button } from "@/Components/ui/button";
 import { Checkbox } from "@/Components/ui/checkbox";
 import { statuses } from "@/constant";
 import { ProjectDataType } from "@/types/project";
+import { cn } from "@/utils/cn";
 import { getLabel } from "@/utils/getLabel";
 import { Link } from "@inertiajs/react";
 import { ColumnDef } from "@tanstack/react-table";
@@ -81,9 +82,9 @@ export const columns: ColumnDef<ProjectDataType>[] = [
     header: "Status",
     cell: ({ row }) => {
       const statusLabel = String(row.getValue("status"));
-      const formatted = getLabel({ value: statusLabel, options: statuses });
+      const {label, className} = getLabel({ value: statusLabel, options: statuses });
 
-      return <Badge className="text-nowrap">{formatted}</Badge>;
+      return <Badge className={cn("text-nowrap", className)}>{label}</Badge>;
     },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));

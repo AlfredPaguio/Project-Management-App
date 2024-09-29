@@ -23,6 +23,7 @@ interface DataTableFacetedFilterProps<TData, TValue> {
     label: string;
     value: string;
     icon?: React.ComponentType<{ className?: string }>;
+    className?: string;
   }[];
 }
 
@@ -63,9 +64,12 @@ function DataTableFacetedFilter<TData, TValue>({
                     .filter((option) => selectedValues.has(option.value))
                     .map((option) => (
                       <Badge
-                        variant="secondary"
+                        // variant="secondary"
                         key={option.value}
-                        className="rounded-sm px-1 font-normal"
+                        className={cn(
+                          "rounded-sm px-1 font-normal",
+                          option?.className
+                        )}
                       >
                         {option.label}
                       </Badge>

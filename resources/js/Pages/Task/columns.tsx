@@ -6,6 +6,7 @@ import { Button } from "@/Components/ui/button";
 import { Checkbox } from "@/Components/ui/checkbox";
 import { priorities, statuses } from "@/constant";
 import { TaskDataType } from "@/types/task";
+import { cn } from "@/utils/cn";
 import { getLabel } from "@/utils/getLabel";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
@@ -69,9 +70,12 @@ export const columns: ColumnDef<TaskDataType>[] = [
     header: "Status",
     cell: ({ row }) => {
       const statusLabel = String(row.getValue("status"));
-      const formatted = getLabel({ value: statusLabel, options: statuses });
+      const { label, className } = getLabel({
+        value: statusLabel,
+        options: statuses,
+      });
 
-      return <Badge className="text-nowrap">{formatted}</Badge>;
+      return <Badge className={cn("text-nowrap", className)}>{label}</Badge>;
     },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
@@ -82,9 +86,12 @@ export const columns: ColumnDef<TaskDataType>[] = [
     header: "Priority",
     cell: ({ row }) => {
       const priorityLabel = String(row.getValue("priority"));
-      const formatted = getLabel({ value: priorityLabel, options: priorities });
+      const { label, className } = getLabel({
+        value: priorityLabel,
+        options: priorities,
+      });
 
-      return <Badge className="text-nowrap">{formatted}</Badge>;
+      return <Badge className={cn("text-nowrap", className)}>{label}</Badge>;
     },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));

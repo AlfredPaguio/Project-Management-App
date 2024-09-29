@@ -72,8 +72,16 @@ export default function Show({
                 <CardTitle>{project.name}</CardTitle>
                 <CardDescription>
                   Status:
-                  <Badge>
-                    {getLabel({ value: project.status, options: statuses })}
+                  <Badge
+                    className={
+                      getLabel({ value: project.status, options: statuses })
+                        .className
+                    }
+                  >
+                    {
+                      getLabel({ value: project.status, options: statuses })
+                        .label
+                    }
                   </Badge>
                   | Due: {new Date(project.due_date).toLocaleDateString()}
                 </CardDescription>
