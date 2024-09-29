@@ -57,11 +57,9 @@ export const columns: ColumnDef<PublicUser>[] = [
       const User = row.original;
 
       return (
-        <div className="flex items-center justify-center">
-          <Button variant={"link"} asChild>
-            <Link href={route("user.show", User.id)}>{User.name}</Link>
-          </Button>
-        </div>
+        <Button variant={"link"} asChild>
+          <Link href={route("user.show", User.id)}>{User.name}</Link>
+        </Button>
       );
     },
   },
@@ -96,11 +94,7 @@ export const columns: ColumnDef<PublicUser>[] = [
       const date = new Date(row.getValue("created_at"));
       const formattedDate = new Intl.DateTimeFormat(undefined).format(date);
 
-      return (
-        <div className="text-center">
-          <time dateTime={formattedDate}>{formattedDate}</time>
-        </div>
-      );
+      return <time dateTime={formattedDate}>{formattedDate}</time>;
     },
   },
   {

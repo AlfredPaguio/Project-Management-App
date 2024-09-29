@@ -1,25 +1,14 @@
 "use client";
 
 import { DataTableRowActions } from "@/Components/data-table/DataTableRowActions";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/Components/ui/alert-dialog";
 import { Badge } from "@/Components/ui/badge";
 import { Button } from "@/Components/ui/button";
 import { Checkbox } from "@/Components/ui/checkbox";
+import { priorities, statuses } from "@/constant";
 import { TaskDataType } from "@/types/task";
-import { getStatusLabel } from "@/utils/getStatusLabel";
-import { Link } from "@inertiajs/react";
+import { getLabel } from "@/utils/getLabel";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Pencil, Trash2 } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 
 export const columns: ColumnDef<TaskDataType>[] = [
   {
@@ -80,7 +69,7 @@ export const columns: ColumnDef<TaskDataType>[] = [
     header: "Status",
     cell: ({ row }) => {
       const statusLabel = String(row.getValue("status"));
-      const formatted = getStatusLabel(statusLabel);
+      const formatted = getLabel({ value: statusLabel, options: statuses });
 
       return <Badge className="text-nowrap">{formatted}</Badge>;
     },
@@ -93,9 +82,9 @@ export const columns: ColumnDef<TaskDataType>[] = [
     header: "Priority",
     cell: ({ row }) => {
       const priorityLabel = String(row.getValue("priority"));
-      // const formatted = getStatusLabel(priorityLabel);
+      const formatted = getLabel({ value: priorityLabel, options: priorities });
 
-      return <Badge className="text-nowrap">{priorityLabel}</Badge>;
+      return <Badge className="text-nowrap">{formatted}</Badge>;
     },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));

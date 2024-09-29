@@ -14,11 +14,12 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { PageProps } from "@/types";
 import { ProjectDataType } from "@/types/project";
 import { TaskDataType } from "@/types/task";
-import { getStatusLabel } from "@/utils/getStatusLabel";
+import { getLabel } from "@/utils/getLabel";
 import { Head, Link } from "@inertiajs/react";
 import { columns as TaskDataTableColumns } from "../Task/columns";
 import { ArrowLeft, Pencil } from "lucide-react";
 import { DataTable } from "@/Components/data-table/DataTable";
+import { statuses } from "@/constant";
 
 interface ProjectPageProps {
   project: ProjectDataType;
@@ -70,8 +71,11 @@ export default function Show({
                 <Label>Project ID: {project.id}</Label>
                 <CardTitle>{project.name}</CardTitle>
                 <CardDescription>
-                  Status: <Badge>{getStatusLabel(project.status)}</Badge> | Due:{" "}
-                  {new Date(project.due_date).toLocaleDateString()}
+                  Status:
+                  <Badge>
+                    {getLabel({ value: project.status, options: statuses })}
+                  </Badge>
+                  | Due: {new Date(project.due_date).toLocaleDateString()}
                 </CardDescription>
                 <CardDescription>
                   Created by: {project.createdBy.name} | Created:{" "}
