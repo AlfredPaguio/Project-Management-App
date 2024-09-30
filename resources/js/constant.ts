@@ -69,3 +69,11 @@ export const priorities = [
     className: "bg-red-500 text-white",
   },
 ];
+
+export const MAX_IMAGE_SIZE = 4; //In MegaBytes
+export const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];

@@ -32,19 +32,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/Components/ui/select";
-import { statuses } from "@/constant";
+import { ACCEPTED_IMAGE_TYPES, MAX_IMAGE_SIZE, statuses } from "@/constant";
 import { Textarea } from "@/Components/ui/textarea";
 import { useState } from "react";
 import { getImageData } from "@/utils/getImageData";
 import { sizeInMB } from "@/utils/fileSizeUtils";
-
-const MAX_IMAGE_SIZE = 4; //In MegaBytes
-const ACCEPTED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-];
 
 const formSchema = z.object({
   name: z.string().min(2),

@@ -38,15 +38,7 @@ import { ArrowLeft, CalendarIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { statuses } from "@/constant";
-
-const MAX_IMAGE_SIZE = 4; //In MegaBytes
-const ACCEPTED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-];
+import { ACCEPTED_IMAGE_TYPES, MAX_IMAGE_SIZE, statuses } from "@/constant";
 
 const formSchema = z.object({
   name: z.string().min(2),
