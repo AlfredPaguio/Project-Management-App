@@ -1,8 +1,10 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { PageProps } from "@/types";
-import { Head } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import { columns } from "./columns";
 import { DataTable } from "@/Components/data-table/DataTable";
+import { Button } from "@/Components/ui/button";
+import { Plus } from "lucide-react";
 
 interface QueryParams {
   sort?: string;
@@ -20,9 +22,16 @@ function Index({ auth, tasks }: PageProps & TaskPageProps) {
     <AuthenticatedLayout
       user={auth.user}
       header={
+        <div className="flex items-center justify-between">
         <h2 className="font-semibold text-xl text-gray-800 leading-tight">
           Tasks
         </h2>
+        <Button asChild>
+          <Link href={route("task.create")}>
+            <Plus className="mr-2 size-4" /> Create New Project
+          </Link>
+        </Button>
+      </div>
       }
     >
       <Head title="Tasks" />

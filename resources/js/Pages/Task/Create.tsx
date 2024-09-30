@@ -10,7 +10,11 @@ import {
   FormMessage,
 } from "@/Components/ui/form";
 import { Input } from "@/Components/ui/input";
-import { PopoverContent, PopoverTrigger } from "@/Components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/Components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -19,13 +23,17 @@ import {
   SelectValue,
 } from "@/Components/ui/select";
 import { Textarea } from "@/Components/ui/textarea";
-import { ACCEPTED_IMAGE_TYPES, MAX_IMAGE_SIZE, statuses } from "@/constant";
+import {
+  ACCEPTED_IMAGE_TYPES,
+  MAX_IMAGE_SIZE,
+  priorities,
+  statuses,
+} from "@/constant";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { PageProps } from "@/types";
+import { PageProps, PublicUser } from "@/types";
 import { cn } from "@/utils/cn";
 import { sizeInMB } from "@/utils/fileSizeUtils";
 import { getImageData } from "@/utils/getImageData";
-import { Popover } from "@headlessui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Head, Link, router } from "@inertiajs/react";
 import { format } from "date-fns";
@@ -55,11 +63,19 @@ const formSchema = z.object({
   priority: z.enum(["low", "medium", "high"], {
     errorMap: () => ({ message: "Task priority is required." }),
   }),
-  assigned_user_id: z.string().optional().nullable(),
+  assigned_user: z.string().optional().nullable(),
   project: z.string().min(1, "Project is required."),
 });
 
-export default function Create({ auth, projects, users }: PageProps) {
+interface TaskPageProps {
+  users: PublicUser[];
+}
+
+export default function Create({
+  auth,
+  projects,
+  users,
+}: PageProps & TaskPageProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     mode: "onSubmit",
     resolver: zodResolver(formSchema),
@@ -76,8 +92,8 @@ export default function Create({ auth, projects, users }: PageProps) {
       formData.append("due_date", values.due_date.toISOString().split("T")[0]);
     }
     formData.append("priority", values.priority);
-    if (values.assigned_user_id) {
-      formData.append("assigned_user_id", values.assigned_user_id);
+    if (values.assigned_user) {
+      formData.append("assigned_user_id", values.assigned_user);
     }
 
     if (values.project) {
@@ -173,6 +189,7 @@ export default function Create({ auth, projects, users }: PageProps) {
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="due_date"
@@ -206,20 +223,19 @@ export default function Create({ auth, projects, users }: PageProps) {
                             fromYear={2000}
                             toYear={new Date().getFullYear()}
                             onSelect={field.onChange}
-                            disabled={(date) =>
-                              date < new Date() || date < new Date("1900-01-01")
-                            }
+                            disabled={(date) => date < new Date("1900-01-01")}
                             initialFocus
                           />
                         </PopoverContent>
                       </Popover>
                       <FormDescription>
-                        This is your task deadline/due date.
+                        This is your project deadline/due date.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="status"
@@ -258,6 +274,131 @@ export default function Create({ auth, projects, users }: PageProps) {
                     </FormItem>
                   )}
                 />
+
+                <FormField
+                  control={form.control}
+                  name="priority"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Priority</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue
+                              placeholder="Select Priority"
+                              defaultValue={"medium"}
+                            />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {Object.entries(priorities).map(([key, status]) => (
+                            <SelectItem key={key} value={status.value}>
+                              <div className="flex">
+                                {status.icon && (
+                                  <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+                                )}
+                                <span>{status.label}</span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>
+                        This is your task priority.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="assigned_user"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Assign User</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value ?? ""}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Assign a user" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {users.map((user) => (
+                            <SelectItem key={user.id} value={user.id.toString()}>
+                              <div className="flex">
+                                {/*
+                                !!TODO: profile pictures
+                                {status.icon && (
+                                  <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+                                )} */}
+                                <span>{user.name}</span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>
+                        This is your task priority.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+
+<FormField
+                  control={form.control}
+                  name="project"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Project</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value ?? ""}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Assign a user" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {projects.data.map((project) => (
+                            <SelectItem key={project.id} value={project.id.toString()}>
+                              <div className="flex">
+                                {/*
+                                !!TODO: profile pictures
+                                {status.icon && (
+                                  <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+                                )} */}
+                                <span>{project.name}</span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>
+                        This is your task priority.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <pre>
+                  <code>{JSON.stringify(users, undefined, 2)}</code>
+                </pre>
+
+                <pre>
+                  <code>{JSON.stringify(projects, undefined, 2)}</code>
+                </pre>
+
                 <Button type="button" variant={"destructive"} asChild>
                   <Link href={route("task.index")}>Cancel</Link>
                 </Button>
