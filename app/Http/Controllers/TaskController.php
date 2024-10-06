@@ -33,12 +33,12 @@ class TaskController extends Controller
      */
     public function create()
     {
-        $projects = Project::query()->orderBy('name', 'asc')->get(['id', 'name']);
-        $users = User::query()->orderBy('name', 'asc')->get(['id', 'name']);
+        $projects = Project::select('id', 'name')->orderBy('name', 'asc')->get();
+        $users = User::select('id', 'name')->orderBy('name', 'asc')->get();
 
         return inertia("Task/Create", [
-            'projects' => ProjectResource::collection($projects),
-            'users' => $users,
+            'projects' => $projects,
+            'users' => UserResource::collection($users),
         ]);
     }
 
@@ -48,6 +48,7 @@ class TaskController extends Controller
     public function store(StoreTaskRequest $request)
     {
         $data = $request->validated();
+        dd($data, $request);
         $data["created_by"] = Auth::id();
         $data["updated_by"] = Auth::id();
 

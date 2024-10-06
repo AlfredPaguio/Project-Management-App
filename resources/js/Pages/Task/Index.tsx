@@ -28,7 +28,7 @@ function Index({ auth, tasks }: PageProps & TaskPageProps) {
         </h2>
         <Button asChild>
           <Link href={route("task.create")}>
-            <Plus className="mr-2 size-4" /> Create New Project
+            <Plus className="mr-2 size-4" /> Create New Task
           </Link>
         </Button>
       </div>

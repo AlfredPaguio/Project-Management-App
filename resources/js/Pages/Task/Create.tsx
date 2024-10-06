@@ -31,6 +31,7 @@ import {
 } from "@/constant";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { PageProps, PublicUser } from "@/types";
+import { ProjectDataType } from "@/types/project";
 import { cn } from "@/utils/cn";
 import { sizeInMB } from "@/utils/fileSizeUtils";
 import { getImageData } from "@/utils/getImageData";
@@ -68,7 +69,8 @@ const formSchema = z.object({
 });
 
 interface TaskPageProps {
-  users: PublicUser[];
+  users: { data: PublicUser[] };
+  projects: ProjectDataType[];
 }
 
 export default function Create({
@@ -105,6 +107,9 @@ export default function Create({
         formData.append(`image[${index}]`, file);
       });
     }
+
+    console.table(formData);
+    console.table(values);
 
     router.post(route("task.store"), formData);
   }
@@ -195,7 +200,7 @@ export default function Create({
                   name="due_date"
                   render={({ field }) => (
                     <FormItem className="space-x-2">
-                      <FormLabel>Due date :</FormLabel>
+                      <FormLabel>Due date</FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
@@ -330,8 +335,11 @@ export default function Create({
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {users.map((user) => (
-                            <SelectItem key={user.id} value={user.id.toString()}>
+                          {users.data.map((user) => (
+                            <SelectItem
+                              key={user.id}
+                              value={user.id.toString()}
+                            >
                               <div className="flex">
                                 {/*
                                 !!TODO: profile pictures
@@ -352,8 +360,7 @@ export default function Create({
                   )}
                 />
 
-
-<FormField
+                <FormField
                   control={form.control}
                   name="project"
                   render={({ field }) => (
@@ -369,8 +376,11 @@ export default function Create({
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {projects.data.map((project) => (
-                            <SelectItem key={project.id} value={project.id.toString()}>
+                          {projects.map((project) => (
+                            <SelectItem
+                              key={project.id}
+                              value={project.id.toString()}
+                            >
                               <div className="flex">
                                 {/*
                                 !!TODO: profile pictures
@@ -390,14 +400,6 @@ export default function Create({
                     </FormItem>
                   )}
                 />
-
-                <pre>
-                  <code>{JSON.stringify(users, undefined, 2)}</code>
-                </pre>
-
-                <pre>
-                  <code>{JSON.stringify(projects, undefined, 2)}</code>
-                </pre>
 
                 <Button type="button" variant={"destructive"} asChild>
                   <Link href={route("task.index")}>Cancel</Link>
