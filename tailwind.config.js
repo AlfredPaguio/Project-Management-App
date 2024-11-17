@@ -1,5 +1,7 @@
+//https://github.com/tailwindlabs/tailwindcss-forms/issues/151#issuecomment-1804554914
+import tailwindAnimatePlugin from "tailwindcss-animate";
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+const config = {
     darkMode: ["class"],
     content: [
         "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php",
@@ -74,5 +76,7 @@ module.exports = {
             },
         },
     },
-    plugins: [require("tailwindcss-animate")],
+    plugins: [tailwindAnimatePlugin],
 };
+
+export default config;
