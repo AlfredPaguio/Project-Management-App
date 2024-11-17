@@ -3,10 +3,18 @@ import { PageProps } from "@/types";
 import { Head, Link } from "@inertiajs/react";
 import { columns } from "./columns";
 import { Button } from "@/Components/ui/button";
-import { Plus } from "lucide-react";
+import { BarChart, Plus } from "lucide-react";
 import { DataTable } from "@/Components/data-table/DataTable";
+import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
 
 function Index({ auth, projects }: PageProps) {
+  const projectStats = {
+    total: projects.data.length,
+    completed: projects.data.filter((p) => p.status === "completed").length,
+    inProgress: projects.data.filter((p) => p.status === "in_progress").length,
+    pending: projects.data.filter((p) => p.status === "pending").length,
+  };
+
   return (
     <AuthenticatedLayout
       user={auth.user}
@@ -26,14 +34,59 @@ function Index({ auth, projects }: PageProps) {
       <Head title="Projects" />
 
       <div className="py-12">
-        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-          <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <DataTable
-              columns={columns}
-              data={projects.data}
-              key={"ProjectTable"}
-            />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Total Projects
+                </CardTitle>
+                <BarChart className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{projectStats.total}</div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Completed</CardTitle>
+                <BarChart className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {projectStats.completed}
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  In Progress
+                </CardTitle>
+                <BarChart className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {projectStats.inProgress}
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Pending</CardTitle>
+                <BarChart className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{projectStats.pending}</div>
+              </CardContent>
+            </Card>
           </div>
+
+          <DataTable
+            columns={columns}
+            data={projects.data}
+            key={"ProjectTable"}
+          />
         </div>
       </div>
     </AuthenticatedLayout>
