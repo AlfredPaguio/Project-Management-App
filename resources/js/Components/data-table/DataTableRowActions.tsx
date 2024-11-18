@@ -1,6 +1,6 @@
-import { Button } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
 import { Link } from "@inertiajs/react";
-import { Ellipsis, Pencil, Trash2 } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,6 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { cn } from "@/utils/cn";
 
 interface DataTableRowActionsProps {
   name: string;
@@ -38,7 +39,7 @@ export function DataTableRowActions({
             variant="ghost"
             className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
           >
-            <Ellipsis className="size-4" />
+            <MoreHorizontal className="size-4" />
             <span className="sr-only">Open menu</span>
           </Button>
         </DropdownMenuTrigger>
@@ -62,13 +63,16 @@ export function DataTableRowActions({
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription className="whitespace-pre-line">
             {`Are you sure you want to delete "${name}?"
-              This action cannot be undone. This will permanently delete your account
-              and remove your data from our servers.`}
+              This action cannot be undone. This will permanently delete the
+              selected item and remove its data from our servers.`}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction asChild>
+          <AlertDialogAction
+            className={cn(buttonVariants({ variant: "destructive" }))}
+            asChild
+          >
             <Link href={deleteRoute} method="delete" as="button" type="button">
               Continue
             </Link>

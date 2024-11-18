@@ -14,16 +14,29 @@ function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
-    <div className="flex items-center justify-between p-2">
-      <div className="flex items-center justify-center w-fit">
-        <Input
-          placeholder="Filter name..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
-          className="h-8 w-[150px] lg:w-[384px]"
-        />
+    <div className="flex items-center justify-between pt-4">
+      <div className="flex flex-1 items-center space-x-2">
+        <div className="relative w-full max-w-sm">
+          <Input
+            placeholder="Filter name..."
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("name")?.setFilterValue(event.target.value)
+            }
+            className="h-8 w-full"
+            aria-label="Filter name"
+          />
+          {table.getAllColumns().find((x) => x.id === "name") && (
+            <Button
+              variant="ghost"
+              onClick={() => table.getColumn("name")?.setFilterValue(null)}
+              className="absolute right-0 top-0 h-8 px-2"
+              aria-label="Clear filter"
+            >
+              <XIcon className="size-4" />
+            </Button>
+          )}
+        </div>
         {/* {table.getColumn("status") && ( */}
         {table.getAllColumns().find((x) => x.id === "status") && (
           <DataTableFacetedFilter
@@ -47,7 +60,7 @@ function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
             className="h-8 px-2 lg:px-3"
           >
             Reset
-            <XIcon className="ml-2 h-4 w-4" />
+            <XIcon className="ml-2 size-4" />
           </Button>
         )}
         {/* <Select
@@ -91,8 +104,8 @@ function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
       </div>
       <div className="text-sm text-muted-foreground">
         <DataTableViewOptions table={table} />
-        {table.getFilteredSelectedRowModel().rows.length} of{" "}
-        {table.getFilteredRowModel().rows.length} row(s) selected.
+        {/* {table.getFilteredSelectedRowModel().rows.length} of{" "}
+        {table.getFilteredRowModel().rows.length} row(s) selected. */}
       </div>
     </div>
   );

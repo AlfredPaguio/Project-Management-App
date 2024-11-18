@@ -81,12 +81,13 @@ function Index({ auth, projects }: PageProps) {
               </CardContent>
             </Card>
           </div>
-
+          <div className="bg-background shadow-md rounded-lg overflow-hidden">
           <DataTable
             columns={columns}
             data={projects.data}
             key={"ProjectTable"}
           />
+          </div>
         </div>
       </div>
     </AuthenticatedLayout>
