@@ -92,7 +92,9 @@ function ProjectForm({ form, projectID, onSubmit }: ProjectFormProps) {
                 </div>
               </FormControl>
               <FormDescription>
-                Upload a new image or keep the existing one.
+                {projectID
+                  ? "Upload a new image or keep the existing one."
+                  : "Upload an image for your project."}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -108,7 +110,9 @@ function ProjectForm({ form, projectID, onSubmit }: ProjectFormProps) {
                 <Input {...field} />
               </FormControl>
               <FormDescription>
-                Update the name of your project.
+                {projectID
+                  ? "Update the name of your project."
+                  : "Provide a name for your project."}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -124,7 +128,9 @@ function ProjectForm({ form, projectID, onSubmit }: ProjectFormProps) {
                 <Textarea {...field} />
               </FormControl>
               <FormDescription>
-                Update the project description (optional).
+                {projectID
+                  ? "Update the project description (optional)."
+                  : "Describe your project (optional)."}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -166,7 +172,7 @@ function ProjectForm({ form, projectID, onSubmit }: ProjectFormProps) {
                 </PopoverContent>
               </Popover>
               <FormDescription>
-                Update the project deadline (optional).
+                {projectID ? "Update" : "Set"} the project deadline (optional).
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -198,7 +204,8 @@ function ProjectForm({ form, projectID, onSubmit }: ProjectFormProps) {
                 </SelectContent>
               </Select>
               <FormDescription>
-                Update the current status of your project.
+                {projectID ? "Update" : "Set"} the current status of your
+                project.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -216,7 +223,9 @@ function ProjectForm({ form, projectID, onSubmit }: ProjectFormProps) {
               Cancel
             </Link>
           </Button>
-          <Button type="submit">Update Project</Button>
+          <Button type="submit">
+            {projectID ? "Update" : "Create"} Project
+          </Button>
         </div>
       </form>
     </Form>
