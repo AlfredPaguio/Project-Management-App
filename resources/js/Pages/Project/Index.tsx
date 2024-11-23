@@ -13,6 +13,7 @@ function Index({ auth, projects }: PageProps) {
     completed: projects.data.filter((p) => p.status === "completed").length,
     inProgress: projects.data.filter((p) => p.status === "in_progress").length,
     pending: projects.data.filter((p) => p.status === "pending").length,
+    cancelled: projects.data.filter((p) => p.status === "cancelled").length,
   };
 
   return (
@@ -80,13 +81,24 @@ function Index({ auth, projects }: PageProps) {
                 <div className="text-2xl font-bold">{projectStats.pending}</div>
               </CardContent>
             </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Cancelled</CardTitle>
+                <BarChart className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {projectStats.cancelled}
+                </div>
+              </CardContent>
+            </Card>
           </div>
           <div className="bg-background shadow-md rounded-lg overflow-hidden">
-          <DataTable
-            columns={columns}
-            data={projects.data}
-            key={"ProjectTable"}
-          />
+            <DataTable
+              columns={columns}
+              data={projects.data}
+              key={"ProjectTable"}
+            />
           </div>
         </div>
       </div>
