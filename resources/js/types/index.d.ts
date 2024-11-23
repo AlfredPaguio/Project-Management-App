@@ -1,3 +1,4 @@
+import { DashboardData } from "./dashboard";
 import { Projects } from "./project";
 import { Tasks } from "./task";
 
@@ -40,6 +41,7 @@ export type PageProps<
   auth: {
     user: User;
   };
+  dashboardData: DashboardData;
   flash: Record<string, string | undefined>;
   projects: Projects;
   tasks: Tasks;
