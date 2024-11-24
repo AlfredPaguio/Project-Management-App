@@ -12,7 +12,8 @@ use App\Models\Project;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class TaskController extends Controller
 {
@@ -31,13 +32,15 @@ class TaskController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
+        $projectId = $request->query('project_id');
         $projects = Project::select('id', 'name')->orderBy('name', 'asc')->get();
         $users = User::select('id', 'name')->orderBy('name', 'asc')->get();
 
         return inertia("Task/Create", [
             'projects' => $projects,
+            'projectId' => $projectId,
             'users' => UserResource::collection($users),
         ]);
     }
@@ -48,21 +51,23 @@ class TaskController extends Controller
     public function store(StoreTaskRequest $request)
     {
         $data = $request->validated();
-        dd($data, $request);
         $data["created_by"] = Auth::id();
         $data["updated_by"] = Auth::id();
+
+        $newTask = Task::create(Arr::except($data, ["image_path"]));
 
         if ($request->hasFile('image')) {
             $imagePaths = [];
             foreach ($request->file('image') as $index => $file) {
-
-                $imagePath = $file->store('task/' . Str::random(), 'public');
-                $imagePaths[] = $imagePath;
+                $filename = $file->hashName();
+                Storage::disk('public')->putFileAs('task/' . $newTask->id, $file, $filename);
+                $imagePaths[] = $filename;
             }
-            $data['image_path'] = implode(',', $imagePaths);
+            //it should be image_filenames but whatever
+            $newTask->image_path = implode(',', $imagePaths);
+            $newTask->save();
         }
 
-        Project::create($data);
         return to_route("task.index")->with("success", "Task was created");
     }
 
@@ -98,21 +103,26 @@ class TaskController extends Controller
     {
         $data = $request->validated();
         $data["updated_by"] = Auth::id();
+
+        $task->update(Arr::except($data, ['image_path']));
+
         if ($request->hasFile('image')) {
-            $oldImageFolder = Str::between($task->image_path, 'task/', '/');
-            if (Storage::disk('public')->exists("task/" . $oldImageFolder)) {
-                Storage::disk('public')->deleteDirectory("task/" . $oldImageFolder);
+            // Delete existing images
+            $imageFolder = 'task/' . $task->id;
+            if (Storage::disk('public')->exists($imageFolder)) {
+                Storage::disk('public')->deleteDirectory($imageFolder);
             }
 
             $imagePaths = [];
             foreach ($request->file('image') as $index => $file) {
-                $imagePath = $file->store('task/' . Str::random(), 'public');
-                $imagePaths[] = $imagePath;
+                $name = $file->hashName();
+                Storage::disk('public')->putFileAs($imageFolder, $file, $name);
+                $imagePaths[] = $name;
             }
-            $data['image_path'] = implode(',', $imagePaths);
+            $task->image_path = implode(',', $imagePaths);
+            $task->save();
         }
 
-        $task->update($data);
         return to_route("task.index")->with("success", "Task \"$task->name\" was updated");
     }
 
@@ -122,18 +132,18 @@ class TaskController extends Controller
     public function destroy(Task $task)
     {
         $name = $task->name;
-        $image = $task->image_path;
+        $taskID = $task->id;
 
         try {
             $task->tasks()->delete();
             $task->delete();
         } catch (\Throwable $th) {
-            return to_route("task.index")->with("error", "Task \"$name\" not found \n \'$th\'");
+            return to_route("task.index")->with("error", "Failed to delete task \"$name\": {$th->getMessage()}");
         }
 
-        $oldImageFolder = Str::between($image, 'task/', '/');
-        if (Storage::disk('public')->exists("task/" . $oldImageFolder)) {
-            Storage::disk('public')->deleteDirectory("task/" . $oldImageFolder);
+        $imageFolder = 'projects/' . $taskID;
+        if (Storage::exists($imageFolder)) {
+            Storage::deleteDirectory($imageFolder);
         }
 
         return to_route("task.index")->with("success", "Task \"$name\" was deleted");

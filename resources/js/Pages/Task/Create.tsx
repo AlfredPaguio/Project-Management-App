@@ -13,15 +13,20 @@ import { FormDataType, formSchema } from "./schema/formSchema";
 interface TaskPageProps {
   users: { data: PublicUser[] };
   projects: ProjectDataType[];
+  projectId?: string;
 }
 
 export default function Create({
   auth,
   projects,
   users,
+  projectId,
 }: PageProps & TaskPageProps) {
   const form = useForm<FormDataType>({
     mode: "onSubmit",
+    defaultValues: {
+      projectID: projectId ?? "",
+    },
     resolver: zodResolver(formSchema),
   });
 

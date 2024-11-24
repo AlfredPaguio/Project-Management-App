@@ -9,6 +9,8 @@ use App\Http\Resources\ProjectResource;
 use App\Http\Resources\TaskResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\File;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 class ProjectController extends Controller
@@ -41,20 +43,23 @@ class ProjectController extends Controller
         $data = $request->validated();
         $data["created_by"] = Auth::id();
         $data["updated_by"] = Auth::id();
-        // dd($data);
+
+        $newProject = Project::create(Arr::except($data, ["image_path"]));
 
         if ($request->hasFile('image')) {
             $imagePaths = [];
             foreach ($request->file('image') as $index => $file) {
-
-                $imagePath = $file->store('project/' . Str::random(), 'public');
-                // $imagePath = $file->store('project/'.$data["name"], 'public');
-                $imagePaths[] = $imagePath;
+                $name = $file->hashName();
+                Storage::disk('public')->putFileAs('projects/' . $newProject->id, $file, $name);
+                // similar to
+                // $imagePath = $file->store('project/'.$newProject->id, $name);
+                $imagePaths[] = $name;
             }
-            $data['image_path'] = implode(',', $imagePaths);
+            //it should be image_filenames but whatever
+            $newProject->image_path = implode(',', $imagePaths);
+            $newProject->save();
         }
 
-        Project::create($data);
         return to_route("project.index")->with("success", "Project was created");
     }
 
@@ -87,21 +92,26 @@ class ProjectController extends Controller
     {
         $data = $request->validated();
         $data["updated_by"] = Auth::id();
+
+        $project->update(Arr::except($data, ['image_path']));
+
         if ($request->hasFile('image')) {
-            $oldImageFolder = Str::between($project->image_path, 'project/', '/');
-            if (Storage::disk('public')->exists("project/" . $oldImageFolder)) {
-                Storage::disk('public')->deleteDirectory("project/" . $oldImageFolder);
+            // Delete existing images
+            $imageFolder = 'projects/' . $project->id;
+            if (Storage::disk('public')->exists($imageFolder)) {
+                Storage::disk('public')->deleteDirectory($imageFolder);
             }
 
             $imagePaths = [];
             foreach ($request->file('image') as $index => $file) {
-                $imagePath = $file->store('project/' . Str::random(), 'public');
-                $imagePaths[] = $imagePath;
+                $name = $file->hashName();
+                Storage::disk('public')->putFileAs($imageFolder, $file, $name);
+                $imagePaths[] = $name;
             }
-            $data['image_path'] = implode(',', $imagePaths);
+            $project->image_path = implode(',', $imagePaths);
+            $project->save();
         }
 
-        $project->update($data);
         return to_route("project.index")->with("success", "Project \"$project->name\" was updated");
     }
 
@@ -111,27 +121,18 @@ class ProjectController extends Controller
     public function destroy(Project $project)
     {
         $name = $project->name;
-        $image = $project->image_path;
+        $projectID = $project->id;
 
         try {
             $project->tasks()->delete();
             $project->delete();
         } catch (\Throwable $th) {
-            return to_route("project.index")->with("error", "Project \"$name\" not found \n \'$th\'");
+            return to_route("project.index")->with("error", "Failed to delete project \"$name\": {$th->getMessage()}");
         }
 
-
-        // the above project is successfully deleted, so it's safe to delete those files
-        // $oldImages = explode(',', $images);
-        // foreach ($oldImages as $oldImagePath) {
-        //     if (Storage::disk('public')->exists($oldImagePath)) {
-        //         Storage::disk('public')->delete($oldImagePath);
-        //     }
-        // }
-
-        $oldImageFolder = Str::between($image, 'project/', '/');
-        if (Storage::disk('public')->exists("project/" . $oldImageFolder)) {
-            Storage::disk('public')->deleteDirectory("project/" . $oldImageFolder);
+        $imageFolder = 'projects/' . $projectID;
+        if (Storage::exists($imageFolder)) {
+            Storage::deleteDirectory($imageFolder);
         }
 
         return to_route("project.index")->with("success", "Project \"$name\" was deleted");

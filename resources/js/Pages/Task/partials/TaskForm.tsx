@@ -196,10 +196,7 @@ function TaskForm({ form, onSubmit, users, projects }: TaskFormProps) {
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue
-                      placeholder="Select Priority"
-                      defaultValue={"medium"}
-                    />
+                    <SelectValue placeholder="Select Priority" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -269,7 +266,7 @@ function TaskForm({ form, onSubmit, users, projects }: TaskFormProps) {
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Assign a user" />
+                    <SelectValue placeholder="Assign project" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>

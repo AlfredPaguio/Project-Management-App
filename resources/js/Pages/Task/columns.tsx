@@ -57,9 +57,20 @@ export const columns: ColumnDef<TaskDataType>[] = [
     accessorKey: "image_path",
     header: "Image",
     cell: ({ row }) => {
-      const image_path = String(row.getValue("image_path"));
+      //similar to what I did to Project's column
+      const imagePaths = row.getValue("image_path") as string[];
+      const firstImage = imagePaths?.[0];
 
-      return <img src={image_path} className="w-60" loading="lazy" />;
+      return firstImage ? (
+        <img
+          src={firstImage}
+          className="w-60"
+          loading="lazy"
+          alt="Project Image"
+        />
+      ) : (
+        <span>No image available</span>
+      );
     },
   },
   {

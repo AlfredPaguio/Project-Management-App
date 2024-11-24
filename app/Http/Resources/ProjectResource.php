@@ -22,7 +22,16 @@ class ProjectResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'image_path' => Str::isUrl($this->image_path) ? $this->image_path : Storage::url($this->image_path),
+            //pls help
+            // 'image_path' => Str::isUrl($this->image_path) ? $this->image_path : Storage::url($this->image_path),
+            'image_path' => $this->image_path
+                //collect all images
+                ? collect(explode(',', $this->image_path))
+                // check if it's a url or a file from server
+                ->map(fn($path) => Str::isUrl($path) ? $path : Storage::url("projects/{$this->id}/{$path}"))
+                ->toArray()
+                // no image aaaa
+                : null,
             //time
             'created_at' => (new Carbon($this->created_at))->format('Y-m-d'),
             'updated_at' => (new Carbon($this->updated_at))->format('Y-m-d'),

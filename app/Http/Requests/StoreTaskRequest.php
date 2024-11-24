@@ -50,7 +50,10 @@ class StoreTaskRequest extends FormRequest
             ],
             'status' => ['required', Rule::in(['pending', 'in_progress', 'completed', 'cancelled'])],
             'description' => ['nullable', 'string', 'min:2'],
+            'priority' => ['required', Rule::in(['low', 'medium', 'high', 'highest'])],
             'due_date' => ['nullable', 'date'],
+            'assigned_user_id' => ['required', 'integer', 'exists:users,id'],
+            'project_id' => ['required', 'integer', 'exists:projects,id'],
         ];
     }
     public function messages()
