@@ -1,27 +1,34 @@
+import { Card, CardContent } from "@/Components/ui/card";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { PageProps, PublicUser } from "@/types";
 import { ProjectDataType } from "@/types/project";
-
+import { TaskDataType } from "@/types/task";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Head, router } from "@inertiajs/react";
-
-import { Card, CardContent } from "@/Components/ui/card";
+import { Head, Link, router } from "@inertiajs/react";
 import { useForm } from "react-hook-form";
 import TaskForm from "./partials/TaskForm";
 import { FormDataType, formSchema } from "./schema/formSchema";
+import { Button } from "@/Components/ui/button";
+import { ArrowLeftIcon } from "lucide-react";
 
 interface TaskPageProps {
   users: { data: PublicUser[] };
   projects: ProjectDataType[];
+  task: TaskDataType;
 }
 
-export default function Create({
+export default function Edit({
   auth,
   projects,
   users,
+  task,
 }: PageProps & TaskPageProps) {
   const form = useForm<FormDataType>({
     mode: "onSubmit",
+    values: {
+      projectID: task.project.id.toString(),
+      ...task,
+    },
     resolver: zodResolver(formSchema),
   });
 
@@ -47,8 +54,9 @@ export default function Create({
         formData.append(`image[${index}]`, file);
       });
     }
+    formData.append("_method", "PATCH");
 
-    router.post(route("task.store"), formData);
+    router.post(route("task.update", task.id), formData);
   }
 
   return (
@@ -56,13 +64,20 @@ export default function Create({
       user={auth.user}
       header={
         <div className="flex justify-between items-center">
-          <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Create New Task
-          </h2>
+          <div className="flex items-center justify-center gap-x-4">
+            <Button asChild>
+              <Link href={route("task.show", task.id)}>
+                <ArrowLeftIcon className="mr-2 size-4" /> Back to Task
+              </Link>
+            </Button>
+            <h2 className="font-semibold text-md lg:text-xl xl:text-2xl text-primary leading-tight">
+              Edit Task: {task.name}
+            </h2>
+          </div>
         </div>
       }
     >
-      <Head title="Tasks" />
+      <Head title={`Edit Task: ${task.name}`} />
 
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -71,7 +86,7 @@ export default function Create({
               <TaskForm
                 form={form}
                 onSubmit={onSubmit}
-                projects={projects}
+                projects={projects.data}
                 users={users.data}
               />
             </CardContent>

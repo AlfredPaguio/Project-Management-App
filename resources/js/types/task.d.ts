@@ -1,4 +1,5 @@
 import { Meta, NavigationLinks, PublicUser } from ".";
+import { ProjectDataType } from "./project";
 
 export interface Tasks {
   data: TaskDataType[];
@@ -19,4 +20,5 @@ export interface TaskDataType {
   createdBy: PublicUser;
   updatedBy: PublicUser;
   assignedUser: PublicUser;
+  project: ProjectDataType;
 }

@@ -3,8 +3,8 @@ import { PageProps, User } from "@/types";
 import { Head, Link } from "@inertiajs/react";
 import { Button } from "@/Components/ui/button";
 import { Plus } from "lucide-react";
-import { DataTable } from "@/Components/data-table/DataTable";
 import { columns } from "./columns";
+import { DataTable } from "@/Components/data-table/DataTable";
 
 interface UserPageProps {
   users: { data: User[] };
