@@ -14,7 +14,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::query()->get();
+        $users = User::query()->whereNot('id', auth()->user()->id)->get();
 
         return inertia("User/Index", [
             "users" => UserResource::collection($users),

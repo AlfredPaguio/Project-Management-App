@@ -50,7 +50,7 @@ export default function Edit({ auth, project }: PageProps & ProjectPageProps) {
       header={
         <div className="flex justify-between items-center">
           <div className="flex items-center justify-center gap-x-4">
-            <Button variant={"outline"} asChild>
+            <Button asChild>
               <Link href={route("project.show", project.id)}>
                 <ArrowLeft className="mr-2 size-4" /> Back to Project
               </Link>
@@ -68,7 +68,11 @@ export default function Edit({ auth, project }: PageProps & ProjectPageProps) {
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <Card>
             <CardContent className="p-6">
-              <ProjectForm form={form} onSubmit={onSubmit} projectID={project.id}/>
+              <ProjectForm
+                form={form}
+                onSubmit={onSubmit}
+                projectID={project.id}
+              />
             </CardContent>
           </Card>
         </div>
