@@ -148,4 +148,17 @@ class TaskController extends Controller
 
         return to_route("task.index")->with("success", "Task \"$name\" was deleted");
     }
+
+
+    public function myTasks()
+    {
+        $user = auth()->user();
+        $tasks = Task::query()->where('assigned_user_id', $user->id)->get();
+
+        // dd($tasks);
+
+        return inertia("Task/Index", [
+            "tasks" => TaskResource::collection($tasks),
+        ])->with("success", "You have tasks");
+    }
 }

@@ -1,36 +1,22 @@
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, Link } from "@inertiajs/react";
-import { PageProps } from "@/types";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/Components/ui/card";
-import {
-  Layout,
-  List,
-  Plus,
-  Settings,
-  User,
-  Calendar,
-  Clock,
-} from "lucide-react";
+import { DataTable } from "@/Components/data-table/DataTable";
+import { Badge } from "@/Components/ui/badge";
+import { Button } from "@/Components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/Components/ui/chart";
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
-import { Button } from "@/Components/ui/button";
-import { statuses } from "@/constant";
-import { getLabel } from "@/utils/getLabel";
-import { columns as TaskColumns } from "./Task/columns";
-import { DataTable } from "@/Components/data-table/DataTable";
-import { Badge } from "@/Components/ui/badge";
 import { ScrollArea } from "@/Components/ui/scroll-area";
+import { statuses } from "@/constant";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { PageProps } from "@/types";
+import { getLabel } from "@/utils/getLabel";
+import { Head, Link } from "@inertiajs/react";
+import { Calendar, EyeIcon, Layout, List, Plus, Settings, User } from "lucide-react";
+import { Bar, BarChart, XAxis, YAxis } from "recharts";
+import { columns as TaskColumns } from "../Task/columns";
 
 const chartConfig = {
   projects: {
@@ -295,13 +281,20 @@ export default function Dashboard({ auth, dashboardData }: PageProps) {
               <Card className="shadow-lg">
                 <CardHeader className="flex justify-between items-center">
                   <CardTitle className="text-xl font-bold text-gray-800">
-                    Recent Tasks
+                    My Recent Tasks
                   </CardTitle>
-                  <Button variant="outline" asChild>
-                    <Link href={route("task.create")}>
-                      <Plus className="mr-2 size-4" /> Add Task
-                    </Link>
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button variant="editable" asChild>
+                      <Link href={route("task.create")}>
+                        <Plus className="mr-2 size-4" /> Add Task
+                      </Link>
+                    </Button>
+                    <Button asChild>
+                      <Link href={route("task.myTasks")}>
+                        <EyeIcon className="mr-2 size-4" /> Show More
+                      </Link>
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <DataTable

@@ -59,7 +59,7 @@ class DashboardController extends Controller
 
 
 
-        return inertia('Dashboard', [
+        return inertia('Dashboard/Show', [
             "dashboardData" => [
                 'recentProjects' => ProjectResource::collection($recentProjects),
                 'recentTasks' => TaskResource::collection($recentTasks),
