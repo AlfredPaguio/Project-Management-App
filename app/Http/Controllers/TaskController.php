@@ -26,6 +26,7 @@ class TaskController extends Controller
 
         return inertia("Task/Index", [
             "tasks" => TaskResource::collection($tasks),
+            "isMyTasks" => false,
         ]);
     }
 
@@ -155,10 +156,9 @@ class TaskController extends Controller
         $user = auth()->user();
         $tasks = Task::query()->where('assigned_user_id', $user->id)->get();
 
-        // dd($tasks);
-
         return inertia("Task/Index", [
             "tasks" => TaskResource::collection($tasks),
+            "isMyTasks" => true,
         ])->with("success", "You have tasks");
     }
 }

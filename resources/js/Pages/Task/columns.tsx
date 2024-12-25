@@ -10,7 +10,7 @@ import { cn } from "@/utils/cn";
 import { getLabel } from "@/utils/getLabel";
 import { Link } from "@inertiajs/react";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, CalendarIcon } from "lucide-react";
 
 export const columns: ColumnDef<TaskDataType>[] = [
   {
@@ -24,6 +24,7 @@ export const columns: ColumnDef<TaskDataType>[] = [
           }
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
+          className="translate-y-[2px]"
         />
       </div>
     ),
@@ -33,6 +34,7 @@ export const columns: ColumnDef<TaskDataType>[] = [
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
           aria-label="Select row"
+          className="translate-y-[2px]"
         />
       </div>
     ),
@@ -52,6 +54,9 @@ export const columns: ColumnDef<TaskDataType>[] = [
         </Button>
       );
     },
+    cell: ({ row }) => (
+      <div className="w-[40px] text-center">{row.getValue("id")}</div>
+    ),
   },
   {
     accessorKey: "image_path",
@@ -64,26 +69,34 @@ export const columns: ColumnDef<TaskDataType>[] = [
       return firstImage ? (
         <img
           src={firstImage}
-          className="w-60"
+          className="w-16 h-16 object-cover rounded-md"
           loading="lazy"
           alt="Project Image"
         />
       ) : (
-        <span>No image available</span>
+        <div className="w-16 h-16 bg-gray-200 rounded-md flex items-center justify-center text-gray-400">
+          No image
+        </div>
       );
     },
   },
   {
     accessorKey: "name",
-    header: "Name",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Name
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: ({ row }) => {
       const task = row.original;
       return (
-        <div className="flex items-center justify-center">
-          <Button variant={"link"} asChild>
-            <Link href={route("task.show", task.id)}>{task.name}</Link>
-          </Button>
-        </div>
+        <Button variant="link" asChild className="text-left font-medium">
+          <Link href={route("task.show", task.id)}>{task.name}</Link>
+        </Button>
       );
     },
   },
@@ -137,7 +150,8 @@ export const columns: ColumnDef<TaskDataType>[] = [
       const formattedDate = new Intl.DateTimeFormat(undefined).format(date);
 
       return (
-        <div className="text-center">
+        <div className="flex items-center">
+          <CalendarIcon className="mr-2 h-4 w-4 text-muted-foreground" />
           <time dateTime={formattedDate}>{formattedDate}</time>
         </div>
       );
