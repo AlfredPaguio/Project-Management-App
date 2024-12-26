@@ -37,7 +37,7 @@ class TaskController extends Controller
     public function create(Request $request)
     {
         $projectId = $request->query('project_id');
-        $projects = Project::select('id', 'name')->orderBy('name', 'asc')->get();
+        $projects = Project::with(['tasks', 'createdBy', 'updatedBy'])->select('id', 'name')->orderBy('name', 'asc')->get();
         $users = User::select('id', 'name')->orderBy('name', 'asc')->get();
 
         return inertia("Task/Create", [
@@ -78,6 +78,7 @@ class TaskController extends Controller
      */
     public function show(Task $task)
     {
+        $task->load(['assignedUser', 'createdBy', 'updatedBy', 'project']);
         return inertia('Task/Show', [
             'task' => new TaskResource($task),
         ]);
@@ -88,7 +89,8 @@ class TaskController extends Controller
      */
     public function edit(Task $task)
     {
-        $projects = Project::query()->orderBy('name', 'asc')->get();
+        $task->load(['assignedUser', 'createdBy', 'updatedBy', 'project']);
+        $projects = Project::with(['tasks', 'createdBy', 'updatedBy'])->orderBy('name', 'asc')->get();
         $users = User::query()->orderBy('name', 'asc')->get();
 
         return inertia("Task/Edit", [

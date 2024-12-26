@@ -20,7 +20,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::query()->get();
+        $projects = Project::with(['tasks', 'createdBy', 'updatedBy'])->get();
 
         return inertia("Project/Index", [
             "projects" => ProjectResource::collection($projects),
@@ -68,9 +68,10 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        $tasks = $project->tasks()->orderBy('id', 'desc')->get();
+        $project->load(['tasks', 'createdBy', 'updatedBy']);
+        $tasks = $project->tasks()->with(['assignedUser', 'createdBy', 'updatedBy', 'project'])->orderBy('id', 'desc')->get();
         return inertia("Project/Show", [
-            "project" => new ProjectResource($project),
+            "project" => ProjectResource::make($project),
             "tasks" => TaskResource::collection($tasks),
         ]);
     }
@@ -80,6 +81,7 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
+        $project->load(['tasks', 'createdBy', 'updatedBy']);
         return inertia("Project/Edit", [
             "project" => new ProjectResource($project),
         ]);
