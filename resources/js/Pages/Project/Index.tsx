@@ -21,7 +21,7 @@ function Index({ auth, projects }: PageProps) {
       user={auth.user}
       header={
         <div className="flex items-center justify-between">
-          <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+          <h2 className="font-semibold text-xl text-foreground leading-tight">
             Projects
           </h2>
           <Button asChild>
