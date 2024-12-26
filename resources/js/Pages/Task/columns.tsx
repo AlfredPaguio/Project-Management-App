@@ -10,7 +10,7 @@ import { cn } from "@/utils/cn";
 import { getLabel } from "@/utils/getLabel";
 import { Link } from "@inertiajs/react";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, CalendarIcon } from "lucide-react";
+import { ArrowUpDown, CalendarIcon, ClockIcon } from "lucide-react";
 
 export const columns: ColumnDef<TaskDataType>[] = [
   {
@@ -173,9 +173,12 @@ export const columns: ColumnDef<TaskDataType>[] = [
     cell: ({ row }) => {
       const date = new Date(row.getValue("due_date"));
       const formattedDate = new Intl.DateTimeFormat(undefined).format(date);
+      const now = new Date();
+      const isOverdue = date < now;
 
       return (
-        <div className="text-center">
+        <div className={cn("flex items-center", isOverdue && "text-red-500")}>
+          <ClockIcon className="mr-2 h-4 w-4" />
           <time dateTime={formattedDate}>{formattedDate}</time>
         </div>
       );
@@ -184,6 +187,36 @@ export const columns: ColumnDef<TaskDataType>[] = [
   {
     accessorKey: "createdBy.name",
     header: "Created By",
+    cell: ({ row }) => {
+      const user = row.original.assignedUser;
+      return (
+        <div className="flex items-center">
+          <div className="relative flex shrink-0 overflow-hidden rounded-full h-8 w-8 mr-2">
+            <div className="flex h-full w-full items-center justify-center rounded-full bg-muted">
+              {user.name.charAt(0)}
+            </div>
+          </div>
+          <span>{user.name}</span>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "assignedUser.name",
+    header: "Assigned To",
+    cell: ({ row }) => {
+      const user = row.original.assignedUser;
+      return (
+        <div className="flex items-center">
+          <div className="relative flex shrink-0 overflow-hidden rounded-full h-8 w-8 mr-2">
+            <div className="flex h-full w-full items-center justify-center rounded-full bg-muted">
+              {user.name.charAt(0)}
+            </div>
+          </div>
+          <span>{user.name}</span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "actions",

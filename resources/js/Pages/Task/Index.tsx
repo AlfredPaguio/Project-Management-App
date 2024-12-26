@@ -53,7 +53,7 @@ function Index({ auth, tasks, isMyTasks }: PageProps & TaskPageProps) {
               <DataTable
                 columns={columns}
                 data={tasks.data}
-                key={"TaskTable"}
+                key={isMyTasks ? "MyTaskTable" : "AllTaskTable"}
               />
             </CardContent>
           </Card>
