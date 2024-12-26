@@ -22,7 +22,8 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = Task::query()->get();
+        // $tasks = Task::query()->get();
+        $tasks = Task::with(['assignedUser', 'createdBy', 'updatedBy', 'project'])->get();
 
         return inertia("Task/Index", [
             "tasks" => TaskResource::collection($tasks),
@@ -154,7 +155,10 @@ class TaskController extends Controller
     public function myTasks()
     {
         $user = auth()->user();
-        $tasks = Task::query()->where('assigned_user_id', $user->id)->get();
+        // $tasks = Task::query()->where('assigned_user_id', $user->id)->get();
+        $tasks = Task::with(['project', 'assignedUser', 'createdBy', 'updatedBy'])
+            ->where('assigned_user_id', $user->id)
+            ->get();
 
         return inertia("Task/Index", [
             "tasks" => TaskResource::collection($tasks),

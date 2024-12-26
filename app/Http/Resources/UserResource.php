@@ -20,7 +20,21 @@ class UserResource extends JsonResource
             "id" => $this->id,
             "name" => $this->name,
             "email" => $this->email,
-            'created_at' => (new Carbon($this->created_at))->format('Y-m-d H:i:s'),
+            'created_at' => $this->formatDate($this->created_at),
         ];
+    }
+    /**
+     * Format dates.
+     *
+     * @param string|null $date
+     * @return string|null
+     */
+    private function formatDate(?string $date): ?string
+    {
+        if (!$date) {
+            return null;
+        }
+
+        return Carbon::parse($date)->format('Y-m-d');
     }
 }

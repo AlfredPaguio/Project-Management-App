@@ -25,28 +25,53 @@ class TaskResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            // similar to what I did on ProjectResource
-            // 'image_path' => Str::isUrl($this->image_path) ? $this->image_path : Storage::url($this->image_path),
-            'image_path' => $this->image_path
-                //collect all images
-                ? collect(explode(',', $this->image_path))
-                // check if it's a url or a file from server
-                ->map(fn($path) => Str::isUrl($path) ? $path : Storage::url("task/{$this->id}/{$path}"))
-                ->toArray()
-                // handle no image
-                : null,
+            'image_path' => $this->formatImagePaths($this->image_path),
             //time
-            'created_at' => (new Carbon($this->created_at))->format('Y-m-d'),
-            'updated_at' => (new Carbon($this->updated_at))->format('Y-m-d'),
-            'due_date' => (new Carbon($this->due_date))->format('Y-m-d'),
+            'created_at' => $this->formatDate($this->created_at),
+            'updated_at' => $this->formatDate($this->updated_at),
+            'due_date' => $this->formatDate($this->due_date),
             //project
             'status' => $this->status,
             'priority' => $this->priority,
-            'project' => new ProjectResource($this->project),
+            'project' => $this->whenLoaded('project', fn() => new ProjectResource($this->project)),
             //user
-            'assignedUser' => $this->assignedUser ? new UserResource($this->assignedUser) : null,
-            'createdBy' => new UserResource($this->createdBy),
-            'updatedBy' => new UserResource($this->updatedBy),
+            'assignedUser' => $this->whenLoaded('assignedUser', fn() => new UserResource($this->assignedUser)),
+            'createdBy' => $this->whenLoaded('createdBy', fn() => new UserResource($this->createdBy)),
+            'updatedBy' => $this->whenLoaded('updatedBy', fn() => new UserResource($this->updatedBy)),
         ];
+    }
+
+    /**
+     * Format image paths.
+     *
+     * @param string|null $imagePaths
+     * @return array|null
+     */
+    private function formatImagePaths(?string $imagePaths): ?array
+    {
+        if (!$imagePaths) {
+            return null;
+        }
+
+        //collect all images
+        return collect(explode(',', $imagePaths))
+            // check if it's a url or a file from server
+            ->map(fn($path) => Str::isUrl($path) ? $path : Storage::url("task/{$this->id}/{$path}"))
+            ->toArray();
+    }
+
+    /**
+     * Format dates.
+     *
+     * @param string|null $date
+     * @return string|null
+     */
+    private function formatDate(?string $date): ?string
+    {
+        if (!$date) {
+            return null;
+        }
+
+        return Carbon::parse($date)->format('Y-m-d');
     }
 }

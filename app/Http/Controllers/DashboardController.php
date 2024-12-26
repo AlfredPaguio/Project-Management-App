@@ -16,14 +16,16 @@ class DashboardController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $recentProjects = Project::latest()->take(5)->get();
-        $recentTasks = Task::latest()->where('assigned_user_id', $user->id)->take(5)->get();
+        $recentProjects = Project::with(['createdBy', 'updatedBy'])->latest()->take(5)->get();
+        $recentTasks = Task::with(['assignedUser', 'createdBy', 'updatedBy'])->latest()->where('assigned_user_id', $user->id)->take(5)->get();
 
+        // Collect all counts
         $projectCount = Project::count();
         $taskCount = Task::count();
         $userCount = User::count();
         $completedTaskCount = Task::where('status', 'completed')->count();
 
+        // Status Counts
         $projectStatusCounts = Project::selectRaw('status, count(*) as count')
             ->groupBy('status')
             ->get();
