@@ -152,10 +152,9 @@ class TaskController extends Controller
         return to_route("task.index")->with("success", "Task \"$name\" was deleted");
     }
 
-
     public function myTasks()
     {
-        $user = auth()->user();
+        $user = Auth::user();
         // $tasks = Task::query()->where('assigned_user_id', $user->id)->get();
         $tasks = Task::with(['project', 'assignedUser', 'createdBy', 'updatedBy'])
             ->where('assigned_user_id', $user->id)
