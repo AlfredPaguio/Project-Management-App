@@ -21,17 +21,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
         [DashboardController::class, 'index']
     )->name('dashboard');
 
-    Route::resource('project', ProjectController::class);
-    Route::get('/task/my-tasks', [TaskController::class, 'myTasks'])
-        ->name('task.myTasks');
-    Route::resource('task', TaskController::class);
-    Route::resource('user', UserController::class);
+    Route::middleware(['role:admin|manager', 'can:manage-projects'])->group(function () {
+        Route::resource('project', ProjectController::class);
+    });
+
+    Route::middleware(['can:view-tasks'])->group(function () {
+        Route::get('/task/my-tasks', [TaskController::class, 'myTasks'])
+            ->name('task.myTasks');
+
+        Route::resource('task', TaskController::class);
+    });
+
+    Route::middleware(['role:admin', 'can:manage-users'])->group(function () {
+        Route::resource('user', UserController::class);
+    });
 });
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+Route::middleware('auth')->prefix('profile')->name('profile.')->group(function () {
+    Route::get('/', [ProfileController::class, 'edit'])->name('edit');
+    Route::patch('/', [ProfileController::class, 'update'])->name('update');
+    Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
 });
 
 require __DIR__ . '/auth.php';
