@@ -64,7 +64,7 @@ export default function Edit({ auth, project }: PageProps & ProjectPageProps) {
     >
       <Head title={`Edit Project: ${project.name}`} />
 
-      <div className="py-12">
+      <div className="py-2">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <Card>
             <CardContent className="p-6">

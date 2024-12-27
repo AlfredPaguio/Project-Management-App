@@ -43,7 +43,7 @@ export default function Show({
               </Link>
             </Button>
             <h2 className="font-semibold text-md lg:text-xl xl:text-2xl text-primary leading-tight">
-              Project: {project.name}
+              {project.name}
             </h2>
           </div>
           <div className="flex gap-2">
@@ -63,9 +63,9 @@ export default function Show({
     >
       <Head title={`Project: "${project.name}"`} />
 
-      <div className="py-12">
+      <div className="py-2">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-          <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-4">
+          <div className="overflow-hidden shadow-sm sm:rounded-lg">
             <Card>
               <CardHeader>
                 <div className="flex justify-between items-start">
@@ -96,7 +96,7 @@ export default function Show({
                 </div>
                 <div className="mt-4 space-y-2">
                   <p className="text-sm text-gray-500">Description:</p>
-                  <p>{project.description || "No description provided."}</p>
+                  <p className="whitespace-pre-wrap">{project.description || "No description provided."}</p>
                 </div>
               </CardContent>
               <CardFooter className="flex justify-between items-center text-sm text-gray-500">
@@ -111,10 +111,17 @@ export default function Show({
             </Card>
 
             <Separator />
-            <div>
-              <h3 className="text-lg font-semibold p-4 pb-0">Project Tasks</h3>
+            <Card className="mt-4 pb-4 overflow-hidden shadow-sm sm:rounded-lg">
+              <CardHeader>
+                <CardTitle className="text-2xl font-bold">
+                  Project Tasks
+                </CardTitle>
+                <CardDescription>
+                Lorem ipsum dolor sit amet.
+              </CardDescription>
+              </CardHeader>
               <DataTable columns={TaskDataTableColumns} data={tasks.data} />
-            </div>
+            </Card>
           </div>
         </div>
       </div>

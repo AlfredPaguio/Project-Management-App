@@ -23,7 +23,7 @@ function Index({ auth, tasks, isMyTasks }: PageProps & TaskPageProps) {
       user={auth.user}
       header={
         <div className="flex items-center justify-between">
-          <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+          <h2 className="font-semibold text-xl  leading-tight">
             {isMyTasks ? "My Tasks" : "All Tasks"}
           </h2>
           <Button asChild>
@@ -38,9 +38,9 @@ function Index({ auth, tasks, isMyTasks }: PageProps & TaskPageProps) {
 
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-          <Card className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+          <Card className=" overflow-hidden shadow-sm sm:rounded-lg">
             <CardHeader>
-              <CardTitle className="text-2xl font-bold text-gray-800">
+              <CardTitle className="text-2xl font-bold ">
                 {isMyTasks ? "My Task List" : "Task Management"}
               </CardTitle>
               <CardDescription>

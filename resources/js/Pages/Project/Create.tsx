@@ -60,7 +60,7 @@ export default function Create({ auth }: PageProps) {
     >
       <Head title="Projects" />
 
-      <div className="py-12">
+      <div className="py-2">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <Card>
             <CardContent className="p-6">

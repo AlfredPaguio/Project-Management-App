@@ -5,7 +5,13 @@ import { columns } from "./columns";
 import { Button } from "@/Components/ui/button";
 import { BarChart, Plus } from "lucide-react";
 import { DataTable } from "@/Components/data-table/DataTable";
-import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/Components/ui/card";
 
 function Index({ auth, projects }: PageProps) {
   const projectStats = {
@@ -34,7 +40,7 @@ function Index({ auth, projects }: PageProps) {
     >
       <Head title="Projects" />
 
-      <div className="py-12">
+      <div className="py-2">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
             <Card>
@@ -93,13 +99,21 @@ function Index({ auth, projects }: PageProps) {
               </CardContent>
             </Card>
           </div>
-          <div className="bg-background shadow-md rounded-lg overflow-hidden">
-            <DataTable
-              columns={columns}
-              data={projects.data}
-              key={"ProjectTable"}
-            />
-          </div>
+          <Card className="overflow-hidden shadow-sm sm:rounded-lg">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold ">
+                Project List
+              </CardTitle>
+              <CardDescription>Lorem ipsum dolor sit amet.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <DataTable
+                columns={columns}
+                data={projects.data}
+                key={"ProjectTable"}
+              />
+            </CardContent>
+          </Card>
         </div>
       </div>
     </AuthenticatedLayout>
