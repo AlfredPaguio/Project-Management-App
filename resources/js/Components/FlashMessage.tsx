@@ -25,10 +25,10 @@ function FlashMessage() {
           const Icon = iconMap[variant];
           if (message) {
             return (
-              <Alert key={type} variant={variant}>
+              <Alert key={type} variant={variant} className="max-w-5xl mx-auto">
                 {Icon}
                 <AlertTitle className="capitalize">{type}</AlertTitle>
-                <AlertDescription>{message}</AlertDescription>
+                <AlertDescription className="text-wrap">{message}</AlertDescription>
               </Alert>
             );
           }

@@ -139,13 +139,12 @@ class TaskController extends Controller
         $taskID = $task->id;
 
         try {
-            $task->tasks()->delete();
             $task->delete();
         } catch (\Throwable $th) {
             return to_route("task.index")->with("error", "Failed to delete task \"$name\": {$th->getMessage()}");
         }
 
-        $imageFolder = 'projects/' . $taskID;
+        $imageFolder = 'task/' . $taskID;
         if (Storage::exists($imageFolder)) {
             Storage::deleteDirectory($imageFolder);
         }
