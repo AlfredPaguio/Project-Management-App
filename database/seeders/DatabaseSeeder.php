@@ -48,6 +48,7 @@ class DatabaseSeeder extends Seeder
         $user = User::find(1);
         $user->assignRole('admin');
 
-        Project::factory()->count(100)->hasTasks(10)->create();
+        // Project::factory()->count(100)->hasTasks(10)->create();
+        Project::factory()->count(5)->hasTasks(5)->create();
     }
 }
