@@ -39,8 +39,6 @@ export default function Authenticated({
     { href: "user.index", label: "Users" },
   ];
 
-  console.table(navItems);
-
   return (
     <div className="min-h-screen bg-background">
       <nav className="border-b">
