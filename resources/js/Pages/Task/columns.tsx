@@ -188,7 +188,7 @@ export const columns: ColumnDef<TaskDataType>[] = [
     accessorKey: "createdBy.name",
     header: "Created By",
     cell: ({ row }) => {
-      const user = row.original.assignedUser;
+      const user = row.original.createdBy;
       return (
         <div className="flex items-center">
           <div className="relative flex shrink-0 overflow-hidden rounded-full h-8 w-8 mr-2">
