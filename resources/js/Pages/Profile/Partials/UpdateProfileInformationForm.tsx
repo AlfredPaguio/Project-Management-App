@@ -1,105 +1,150 @@
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import { Link, useForm, usePage } from '@inertiajs/react';
-import { Transition } from '@headlessui/react';
-import { FormEventHandler } from 'react';
-import { PageProps } from '@/types';
+import InputError from "@/Components/InputError";
+import InputLabel from "@/Components/InputLabel";
+import PrimaryButton from "@/Components/PrimaryButton";
+import TextInput from "@/Components/TextInput";
+import { Link, useForm, usePage } from "@inertiajs/react";
+import { Transition } from "@headlessui/react";
+import { FormEventHandler } from "react";
+import { PageProps } from "@/types";
+import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/Components/ui/label";
+import { Input } from "@/Components/ui/input";
+import { Alert, AlertDescription } from "@/Components/ui/alert";
+import { Button } from "@/Components/ui/button";
+import { CheckCircle, Loader2, XCircle } from "lucide-react";
 
-export default function UpdateProfileInformation({ mustVerifyEmail, status, className = '' }: { mustVerifyEmail: boolean, status?: string, className?: string }) {
-    const user = usePage<PageProps>().props.auth.user;
+interface UpdateProfileInformationProps {
+  mustVerifyEmail: boolean;
+  status?: string;
+}
 
-    const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
-        name: user.name,
-        email: user.email,
+export default function UpdateProfileInformation({
+  mustVerifyEmail,
+  status,
+}: UpdateProfileInformationProps) {
+  const { toast } = useToast();
+
+  const user = usePage<PageProps>().props.auth.user;
+
+  const { data, setData, patch, errors, processing, recentlySuccessful } =
+    useForm({
+      name: user.name ?? "",
+      email: user.email ?? "",
     });
 
-    const submit: FormEventHandler = (e) => {
-        e.preventDefault();
+  const submit: FormEventHandler = (e) => {
+    e.preventDefault();
 
-        patch(route('profile.update'));
-    };
+    // patch(route("profile.update"));
+    // I got this from UpdatePasswordForm's updatePassword function
 
-    return (
-        <section className={className}>
-            <header>
-                <h2 className="text-lg font-medium text-gray-900">Profile Information</h2>
+    patch(route("profile.update"), {
+      preserveState: true,
+      preserveScroll: true,
+      onSuccess: () => {
+        toast({
+          title: (
+            <div className="flex items-center">
+              <CheckCircle className="mr-2 h-4 w-4" />
+              <span>Profile Updated</span>
+            </div>
+          ),
+          description:
+            "Your profile information has been successfully updated.",
+          variant: "success",
+          duration: 5000,
+        });
+      },
+      onError: () => {
+        toast({
+          title: (
+            <div className="flex items-center">
+              <XCircle className="mr-2 h-4 w-4" />
+              <span>Update Failed</span>
+            </div>
+          ),
+          description:
+            "There was an error updating your profile. Please try again.",
+          variant: "destructive",
+          duration: 5000,
+        });
+      },
+    });
+  };
 
-                <p className="mt-1 text-sm text-gray-600">
-                    Update your account's profile information and email address.
-                </p>
-            </header>
+  return (
+    <form onSubmit={submit} className="space-y-6">
+      <div className="space-y-2">
+        <Label htmlFor="name">Name</Label>
+        <Input
+          id="name"
+          value={data.name}
+          onChange={(e) => setData("name", e.target.value)}
+          required
+          autoComplete="name"
+        />
+        {errors.name && (
+          <p className="text-sm text-destructive">{errors.name}</p>
+        )}
+      </div>
 
-            <form onSubmit={submit} className="mt-6 space-y-6">
-                <div>
-                    <InputLabel htmlFor="name" value="Name" />
+      <div className="space-y-2">
+        <Label htmlFor="email">Email</Label>
+        <Input
+          id="email"
+          type="email"
+          value={data.email}
+          onChange={(e) => setData("email", e.target.value)}
+          required
+          autoComplete="username"
+        />
+        {errors.email && (
+          <p className="text-sm text-destructive">{errors.email}</p>
+        )}
+      </div>
 
-                    <TextInput
-                        id="name"
-                        className="mt-1 block w-full"
-                        value={data.name}
-                        onChange={(e) => setData('name', e.target.value)}
-                        required
-                        isFocused
-                        autoComplete="name"
-                    />
+      {mustVerifyEmail && user.email_verified_at === null && (
+        <Alert>
+          <AlertDescription>
+            Your email address is unverified.
+            <Link
+              href={route("verification.send")}
+              method="post"
+              as="button"
+              className="underline text-sm text-primary hover:text-primary/80 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+            >
+              Click here to re-send the verification email.
+            </Link>
+          </AlertDescription>
+        </Alert>
+      )}
 
-                    <InputError className="mt-2" message={errors.name} />
-                </div>
+      {status === "verification-link-sent" && (
+        <Alert>
+          <AlertDescription className="text-sm text-primary">
+            A new verification link has been sent to your email address.
+          </AlertDescription>
+        </Alert>
+      )}
 
-                <div>
-                    <InputLabel htmlFor="email" value="Email" />
-
-                    <TextInput
-                        id="email"
-                        type="email"
-                        className="mt-1 block w-full"
-                        value={data.email}
-                        onChange={(e) => setData('email', e.target.value)}
-                        required
-                        autoComplete="username"
-                    />
-
-                    <InputError className="mt-2" message={errors.email} />
-                </div>
-
-                {mustVerifyEmail && user.email_verified_at === null && (
-                    <div>
-                        <p className="text-sm mt-2 text-gray-800">
-                            Your email address is unverified.
-                            <Link
-                                href={route('verification.send')}
-                                method="post"
-                                as="button"
-                                className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                            >
-                                Click here to re-send the verification email.
-                            </Link>
-                        </p>
-
-                        {status === 'verification-link-sent' && (
-                            <div className="mt-2 font-medium text-sm text-green-600">
-                                A new verification link has been sent to your email address.
-                            </div>
-                        )}
-                    </div>
-                )}
-
-                <div className="flex items-center gap-4">
-                    <PrimaryButton disabled={processing}>Save</PrimaryButton>
-
-                    <Transition
-                        show={recentlySuccessful}
-                        enter="transition ease-in-out"
-                        enterFrom="opacity-0"
-                        leave="transition ease-in-out"
-                        leaveTo="opacity-0"
-                    >
-                        <p className="text-sm text-gray-600">Saved.</p>
-                    </Transition>
-                </div>
-            </form>
-        </section>
-    );
+      <div className="flex justify-between items-center">
+        <Button type="submit" disabled={processing}>
+          {processing ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Saving...
+            </>
+          ) : (
+            "Save Changes"
+          )}
+        </Button>
+        {recentlySuccessful && !processing && (
+          <span className="text-sm text-muted-foreground flex items-center">
+            <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
+            Saved successfully
+          </span>
+        )}
+      </div>
+    </form>
+  );
 }
