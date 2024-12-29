@@ -21,18 +21,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         [DashboardController::class, 'index']
     )->name('dashboard');
 
-    Route::middleware(['role:admin|manager', 'can:manage-projects'])->group(function () {
+    Route::middleware(['role:admin|manager', 'permission:manage-projects'])->group(function () {
         Route::resource('project', ProjectController::class);
     });
 
-    Route::middleware(['can:view-tasks'])->group(function () {
+    Route::middleware(['role_or_permission:admin|manager|view-tasks'])->group(function () {
         Route::get('/task/my-tasks', [TaskController::class, 'myTasks'])
             ->name('task.myTasks');
 
         Route::resource('task', TaskController::class);
     });
 
-    Route::middleware(['role:admin', 'can:manage-users'])->group(function () {
+    Route::middleware(['role_or_permission:admin|manage-users'])->group(function () {
         Route::resource('user', UserController::class);
     });
 });
