@@ -1,12 +1,8 @@
-import { useState, PropsWithChildren, ReactNode } from "react";
 import ApplicationLogo from "@/Components/ApplicationLogo";
-import Dropdown from "@/Components/Dropdown";
-import NavLink from "@/Components/NavLink";
-import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
-import { Link, usePage } from "@inertiajs/react";
-import { PageProps, User } from "@/types";
 import FlashMessage from "@/Components/FlashMessage";
 import { ThemeToggle } from "@/Components/ThemeToggle";
+import { Avatar, AvatarFallback } from "@/Components/ui/avatar";
+import { Button } from "@/Components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,10 +10,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/Components/ui/dropdown-menu";
-import { Button } from "@/Components/ui/button";
-import { LogOutIcon, MenuIcon, UserIcon } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/Components/ui/sheet";
-import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
+import { User } from "@/types";
+import { Link } from "@inertiajs/react";
+import { LogOutIcon, MenuIcon, UserIcon } from "lucide-react";
+import { PropsWithChildren, ReactNode, useState } from "react";
 
 interface Props {
   user: User;
@@ -40,7 +37,7 @@ export default function Authenticated({
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-b from-background/80 to-accent/20">
       <nav className="border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
