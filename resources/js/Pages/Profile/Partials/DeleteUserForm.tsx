@@ -14,6 +14,8 @@ import {
 } from "@/Components/ui/alert-dialog";
 import { Label } from "@/Components/ui/label";
 import { Input } from "@/Components/ui/input";
+import { Alert, AlertDescription, AlertTitle } from "@/Components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 export default function DeleteUserForm() {
   const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
@@ -62,14 +64,15 @@ export default function DeleteUserForm() {
 
   return (
     <section className={`space-y-6`}>
-      <header>
-        <h2 className="text-lg font-medium">Delete Account</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
+      <Alert variant={"destructive"}>
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Warning</AlertTitle>
+        <AlertDescription>
           Once your account is deleted, all of its resources and data will be
           permanently deleted. Before deleting your account, please download any
           data or information that you wish to retain.
-        </p>
-      </header>
+        </AlertDescription>
+      </Alert>
 
       {/* <DangerButton onClick={confirmUserDeletion}>Delete Account</DangerButton> */}
       <Button variant="destructive" onClick={confirmUserDeletion}>
