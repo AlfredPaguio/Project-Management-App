@@ -1,4 +1,5 @@
-import { Meta, NavigationLinks, PublicUser } from ".";
+import { Meta, NavigationLinks } from ".";
+import { PublicUser } from "./user";
 
 export interface Projects {
   data: ProjectDataType[];

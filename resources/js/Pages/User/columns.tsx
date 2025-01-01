@@ -1,15 +1,17 @@
 "use client";
 
 import { DataTableRowActions } from "@/Components/data-table/DataTableRowActions";
+import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
+import { Badge } from "@/Components/ui/badge";
 
 import { Button } from "@/Components/ui/button";
 import { Checkbox } from "@/Components/ui/checkbox";
-import { PublicUser } from "@/types";
+import { User } from "@/types/user";
 import { Link } from "@inertiajs/react";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 
-export const columns: ColumnDef<PublicUser>[] = [
+export const columns: ColumnDef<User>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -54,12 +56,18 @@ export const columns: ColumnDef<PublicUser>[] = [
     accessorKey: "name",
     header: "Name",
     cell: ({ row }) => {
-      const User = row.original;
+      const user = row.original;
 
       return (
-        <Button variant={"link"} asChild>
-          <Link href={route("user.show", User.id)}>{User.name}</Link>
-        </Button>
+        <div className="flex items-center space-x-2">
+          <Avatar className="w-8 h-8">
+            <AvatarImage src={user.avatar || undefined} alt={user.name} />
+            <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
+          </Avatar>
+          <Button variant={"link"} asChild>
+            <Link href={route("user.show", user.id)}>{user.name}</Link>
+          </Button>
+        </div>
       );
     },
   },
@@ -74,6 +82,27 @@ export const columns: ColumnDef<PublicUser>[] = [
           Email
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
+      );
+    },
+  },
+  {
+    accessorKey: "roles",
+    header: "Roles",
+    cell: ({ row }) => {
+      const user = row.original;
+
+      return (
+        <div className="flex flex-wrap gap-1">
+          {user.roles && user.roles.length > 0 ? (
+            user.roles.map(({ id, name }) => (
+              <Badge key={id} variant="default">
+                {name}
+              </Badge>
+            ))
+          ) : (
+            <span>No roles</span>
+          )}
+        </div>
       );
     },
   },

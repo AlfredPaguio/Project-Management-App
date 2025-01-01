@@ -1,16 +1,14 @@
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { PageProps, User } from "@/types";
-import { Head, Link } from "@inertiajs/react";
+import { DataTable } from "@/Components/data-table/DataTable";
 import { Button } from "@/Components/ui/button";
+import {
+  Card
+} from "@/Components/ui/card";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { PageProps } from "@/types";
+import { User } from "@/types/user";
+import { Head, Link } from "@inertiajs/react";
 import { Plus } from "lucide-react";
 import { columns } from "./columns";
-import { DataTable } from "@/Components/data-table/DataTable";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/Components/ui/card";
 
 interface UserPageProps {
   users: { data: User[] };

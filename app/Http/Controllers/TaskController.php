@@ -3,17 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
-use App\Http\Requests\StoreTaskRequest;
-use App\Http\Requests\UpdateTaskRequest;
-use App\Http\Resources\ProjectResource;
+use App\Models\User;
+use App\Models\Project;
+use Illuminate\Support\Arr;
+use Illuminate\Http\Request;
 use App\Http\Resources\TaskResource;
 use App\Http\Resources\UserResource;
-use App\Models\Project;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\StoreTaskRequest;
+use App\Http\Resources\ProjectResource;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
+use App\Http\Requests\UpdateTaskRequest;
 
 class TaskController extends Controller
 {
@@ -126,7 +126,6 @@ class TaskController extends Controller
             $task->image_path = implode(',', $imagePaths);
             $task->save();
         }
-
         return to_route("task.index")->with("success", "Task \"$task->name\" was updated");
     }
 
