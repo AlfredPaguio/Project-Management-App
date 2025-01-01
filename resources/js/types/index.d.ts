@@ -1,15 +1,7 @@
 import { DashboardData } from "./dashboard";
 import { Projects } from "./project";
 import { Tasks } from "./task";
-
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-  email_verified_at: string;
-}
-
-export type PublicUser = Omit<User, "email_verified_at">;
+import { User } from "./user";
 
 export interface NavigationLinks {
   first: string;

@@ -29,13 +29,13 @@ import {
 import { Textarea } from "@/Components/ui/textarea";
 import { priorities, statuses } from "@/constant";
 
+import { ProjectDataType } from "@/types/project";
+import { PublicUser } from "@/types/user";
 import { cn } from "@/utils/cn";
 import { getImageData } from "@/utils/getImageData";
+import { Link } from "@inertiajs/react";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { Link } from "@inertiajs/react";
-import { PublicUser } from "@/types";
-import { ProjectDataType } from "@/types/project";
 
 interface TaskFormProps {
   form: UseFormReturn<FormDataType>;

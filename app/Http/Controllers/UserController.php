@@ -6,6 +6,9 @@ use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class UserController extends Controller
 {
@@ -14,7 +17,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::query()->whereNot('id', auth()->user()->id)->get();
+        $users = User::with(['roles', 'permissions'])
+            ->whereNot('id', Auth::user()->id)
+            ->get();
 
         return inertia("User/Index", [
             "users" => UserResource::collection($users),
@@ -26,7 +31,13 @@ class UserController extends Controller
      */
     public function create()
     {
-        return inertia("User/Create");
+        $roles = Role::all();
+        $permissions = Permission::all();
+
+        return inertia("User/Create", [
+            'roles' => $roles,
+            'permissions' => $permissions,
+        ]);
     }
 
     /**
@@ -37,7 +48,22 @@ class UserController extends Controller
         $data = $request->validated();
         $data['email_verified_at'] = time();
         $data['password'] = bcrypt($data['password']);
-        User::create($data);
+        $newUser = User::create($data);
+
+        if ($request->hasFile('avatar')) {
+            // $newUser->updateAvatar($request->file('avatar'));
+
+            if (!$newUser->updateAvatar($request->file('avatar'))) {
+                return back()->with('error', 'Failed to upload avatar.');
+            }
+        }
+
+        $roles = Role::whereIn('id', $request->input('roles', []))->get();
+        $permissions = Permission::whereIn('id', $request->input('permissions', []))->get();
+
+        $newUser->syncRoles($roles);
+        $newUser->syncPermissions($permissions);
+
 
         return to_route('user.index')
             ->with('success', 'User was created');
@@ -48,6 +74,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
+        $user->load('roles', 'permissions');
         return inertia("User/Show", [
             "user" => new UserResource($user),
         ]);
@@ -58,8 +85,14 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        $user->load('roles', 'permissions');
+        $roles = Role::all();
+        $permissions = Permission::all();
+
         return inertia("User/Edit", [
             "user" => new UserResource($user),
+            'roles' => $roles,
+            'permissions' => $permissions,
         ]);
     }
 
@@ -75,7 +108,24 @@ class UserController extends Controller
         } else {
             unset($data['password']);
         }
+
         $user->update($data);
+
+        if ($request->hasFile('avatar')) {
+            // $user->updateAvatar($request->file('avatar'));
+
+            if (!$user->updateAvatar($request->file('avatar'))) {
+                return back()->with('error', 'Failed to upload avatar.');
+            }
+        }
+
+
+        $roles = Role::whereIn('id', $request->input('roles', []))->get();
+        $permissions = Permission::whereIn('id', $request->input('permissions', []))->get();
+
+        $user->syncRoles($roles);
+        $user->syncPermissions($permissions);
+
         return to_route("user.index")->with("success", "User \"$user->name\" was updated");
     }
 

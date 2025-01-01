@@ -1,7 +1,7 @@
 import ApplicationLogo from "@/Components/ApplicationLogo";
 import FlashMessage from "@/Components/FlashMessage";
 import { ThemeToggle } from "@/Components/ThemeToggle";
-import { Avatar, AvatarFallback } from "@/Components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
 import { Button } from "@/Components/ui/button";
 import {
   DropdownMenu,
@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/Components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/Components/ui/sheet";
-import { User } from "@/types";
+import { User } from "@/types/user";
 import { Link } from "@inertiajs/react";
 import { LogOutIcon, MenuIcon, UserIcon } from "lucide-react";
 import { PropsWithChildren, ReactNode, useState } from "react";
@@ -67,7 +67,12 @@ export default function Authenticated({
                     className="relative h-8 w-8 rounded-full"
                   >
                     <Avatar className="h-8 w-8">
-                      {/* <AvatarImage src={user.avatar} alt={user.name} /> */}
+                      {/* <AvatarImage src={user.avatar || undefined} alt={user.name} /> */}
+                      {/* temporary */}
+                      <AvatarImage
+                        src={`storage/avatars/${user.avatar}` || undefined}
+                        alt={user.name}
+                      />
                       <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
                     </Avatar>
                   </Button>

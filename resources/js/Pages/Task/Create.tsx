@@ -1,6 +1,7 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { PageProps, PublicUser } from "@/types";
+import { PageProps } from "@/types";
 import { ProjectDataType } from "@/types/project";
+import { PublicUser } from "@/types/user";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Head, router } from "@inertiajs/react";

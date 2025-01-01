@@ -2,9 +2,10 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { PageProps } from "@/types";
 import { Head, Link, router } from "@inertiajs/react";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
+import { Button } from "@/Components/ui/button";
+import { Card } from "@/Components/ui/card";
+import { Checkbox } from "@/Components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -14,9 +15,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/Components/ui/form";
-import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
+import { Permission, Role } from "@/types/user";
+import { getImageData } from "@/utils/getImageData";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 const formSchema = z
   .object({
@@ -31,18 +37,48 @@ const formSchema = z
         /[^A-Za-z0-9]/,
         "Password must contain at least one special character"
       )
+      // the optional doesn't work because zod doesn't treat empty string as null or undefined
+      // so it's against conditions above (.min)
+      .or(z.literal(""))
       .optional(),
-    confirmPassword: z.string().min(8).optional(),
+    confirmPassword: z
+      .string()
+      .min(8)
+      .or(z.literal("")) //pls work
+      .optional(),
+    avatar: z.instanceof(File).optional(),
+    roles: z.array(z.number()),
+    permissions: z.array(z.number()),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
     path: ["confirmPassword"],
   });
 
-export default function Create({ auth }: PageProps) {
+interface UserCreatePageProps {
+  roles: Role[];
+  permissions: Permission[];
+}
+
+export default function Create({
+  auth,
+  roles,
+  permissions,
+}: PageProps & UserCreatePageProps) {
+  const [preview, setPreview] = useState("");
+
   const form = useForm<z.infer<typeof formSchema>>({
     mode: "onSubmit",
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      avatar: undefined,
+      roles: [],
+      permissions: [],
+    },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -55,6 +91,15 @@ export default function Create({ auth }: PageProps) {
     if (values.confirmPassword) {
       formData.append("password_confirmation", values.confirmPassword);
     }
+    if (values.avatar) {
+      formData.append("avatar", values.avatar);
+    }
+    values.roles.forEach((roleId) =>
+      formData.append("roles[]", roleId.toString())
+    );
+    values.permissions.forEach((permissionId) =>
+      formData.append("permissions[]", permissionId.toString())
+    );
 
     router.post(route("user.store"), formData);
   }
@@ -81,12 +126,48 @@ export default function Create({ auth }: PageProps) {
 
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-          <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+          <Card className="overflow-hidden shadow-sm sm:rounded-lg">
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="p-4 space-y-8"
               >
+                <div className="flex items-center space-x-4">
+                  <Avatar className="w-24 h-24">
+                    <AvatarImage
+                      src={preview || undefined}
+                      alt={"Avatar Preview"}
+                    />
+                    <AvatarFallback>
+                      {auth.user.name.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <FormField
+                    control={form.control}
+                    name="avatar"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Avatar</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => {
+                              const { files, displayUrl } = getImageData(e);
+                              setPreview(displayUrl);
+                              field.onChange(files ? files[0] : null);
+                            }}
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Upload a new profile picture (optional).
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
                 <FormField
                   control={form.control}
                   name="name"
@@ -158,13 +239,113 @@ export default function Create({ auth }: PageProps) {
                   )}
                 />
 
+                <FormField
+                  control={form.control}
+                  name="roles"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Roles</FormLabel>
+                      <div className="space-y-2">
+                        {roles.map((role) => (
+                          <FormField
+                            key={role.id}
+                            control={form.control}
+                            name="roles"
+                            render={({ field }) => {
+                              return (
+                                <FormItem
+                                  key={role.id}
+                                  className="flex flex-row items-start space-x-3 space-y-0"
+                                >
+                                  <FormControl>
+                                    <Checkbox
+                                      checked={field.value?.includes(role.id)}
+                                      onCheckedChange={(checked) => {
+                                        return checked
+                                          ? field.onChange([
+                                              ...field.value,
+                                              role.id,
+                                            ])
+                                          : field.onChange(
+                                              field.value?.filter(
+                                                (value) => value !== role.id
+                                              )
+                                            );
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    {role.name}
+                                  </FormLabel>
+                                </FormItem>
+                              );
+                            }}
+                          />
+                        ))}
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="permissions"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Permissions</FormLabel>
+                      <div className="space-y-2">
+                        {permissions.map((permission) => (
+                          <FormField
+                            key={permission.id}
+                            control={form.control}
+                            name="permissions"
+                            render={({ field }) => {
+                              return (
+                                <FormItem
+                                  key={permission.id}
+                                  className="flex flex-row items-start space-x-3 space-y-0"
+                                >
+                                  <FormControl>
+                                    <Checkbox
+                                      checked={field.value?.includes(
+                                        permission.id
+                                      )}
+                                      onCheckedChange={(checked) => {
+                                        return checked
+                                          ? field.onChange([
+                                              ...field.value,
+                                              permission.id,
+                                            ])
+                                          : field.onChange(
+                                              field.value?.filter(
+                                                (value) =>
+                                                  value !== permission.id
+                                              )
+                                            );
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">
+                                    {permission.name}
+                                  </FormLabel>
+                                </FormItem>
+                              );
+                            }}
+                          />
+                        ))}
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <Button type="button" variant={"destructive"} asChild>
                   <Link href={route("user.index")}>Cancel</Link>
                 </Button>
                 <Button type="submit">Submit</Button>
               </form>
             </Form>
-          </div>
+          </Card>
         </div>
       </div>
     </AuthenticatedLayout>

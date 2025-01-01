@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Illuminate\Http\Request;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -35,6 +35,8 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user() ? [
                     'id' => $request->user()->id,
                     'name' => $request->user()->name,
+                    'avatar' => $request->user()->avatar,
+                    'email' => $request->user()->email,
                     'roles' => $request->user()->getRoleNames(),
                     'permissions' => $request->user()->getAllPermissions()->pluck('name'),
                 ] : null,

@@ -1,15 +1,16 @@
+import { Button } from "@/Components/ui/button";
 import { Card, CardContent } from "@/Components/ui/card";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { PageProps, PublicUser } from "@/types";
+import { PageProps } from "@/types";
 import { ProjectDataType } from "@/types/project";
 import { TaskDataType } from "@/types/task";
+import { PublicUser } from "@/types/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Head, Link, router } from "@inertiajs/react";
+import { ArrowLeftIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import TaskForm from "./partials/TaskForm";
 import { FormDataType, formSchema } from "./schema/formSchema";
-import { Button } from "@/Components/ui/button";
-import { ArrowLeftIcon } from "lucide-react";
 
 interface TaskPageProps {
   users: { data: PublicUser[] };

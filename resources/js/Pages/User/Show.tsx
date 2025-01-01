@@ -1,18 +1,22 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
+import { Badge } from "@/Components/ui/badge";
 import { Button } from "@/Components/ui/button";
 import {
   Card,
+  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/Components/ui/card";
 import { Label } from "@/Components/ui/label";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { PageProps, PublicUser } from "@/types";
+import { PageProps } from "@/types";
+import { User } from "@/types/user";
 import { Head, Link } from "@inertiajs/react";
 import { ArrowLeft, Pencil } from "lucide-react";
 
 interface UserPageProps {
-  user: PublicUser;
+  user: User;
 }
 
 export default function Show({ auth, user }: PageProps & UserPageProps) {
@@ -43,15 +47,55 @@ export default function Show({ auth, user }: PageProps & UserPageProps) {
 
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-          <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-4">
-            <Card>
-              <CardHeader>
-                <Label>User ID: {user.id}</Label>
-                <CardTitle>{user.name}</CardTitle>
-                <CardDescription>{user.email}</CardDescription>
-              </CardHeader>
-            </Card>
-          </div>
+          <Card>
+            <CardHeader>
+              <div className="flex items-center space-x-4">
+                <Avatar className="w-24 h-24">
+                  <AvatarImage src={user.avatar || undefined} alt={user.name} />
+                  <AvatarFallback>
+                    {user.name.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <Label>User ID: {user.id}</Label>
+                  <CardTitle>{user.name}</CardTitle>
+                  <CardDescription>{user.email}</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-semibold">Roles</h3>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {user.roles && user.roles.length > 0 ? (
+                      user.roles.map((role) => (
+                        <Badge key={role.id} variant="secondary">
+                          {role.name}
+                        </Badge>
+                      ))
+                    ) : (
+                      <span>No roles assigned</span>
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold">Permissions</h3>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {user.permissions && user.permissions.length > 0 ? (
+                      user.permissions.map((permission) => (
+                        <Badge key={permission.id} variant="outline">
+                          {permission.name}
+                        </Badge>
+                      ))
+                    ) : (
+                      <span>No permissions assigned</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </AuthenticatedLayout>
