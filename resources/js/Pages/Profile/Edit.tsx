@@ -1,22 +1,19 @@
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import DeleteUserForm from "./Partials/DeleteUserForm";
-import UpdatePasswordForm from "./Partials/UpdatePasswordForm";
-import UpdateProfileInformationForm from "./Partials/UpdateProfileInformationForm";
-import { Head } from "@inertiajs/react";
-import { PageProps } from "@/types";
+import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
+import { Badge } from "@/Components/ui/badge";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/Components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/Components/ui/tabs";
-import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
-import { Pencil } from "lucide-react";
-import { Button } from "@/Components/ui/button";
-import { Badge } from "@/Components/ui/badge";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { PageProps } from "@/types";
+import { Head } from "@inertiajs/react";
+import DeleteUserForm from "./Partials/DeleteUserForm";
+import UpdatePasswordForm from "./Partials/UpdatePasswordForm";
+import UpdateProfileInformationForm from "./Partials/UpdateProfileInformationForm";
 
 export default function Edit({
   auth,
@@ -51,9 +48,9 @@ export default function Edit({
                   <CardDescription>{auth.user.email}</CardDescription>
                 </div>
               </div>
-              <Button variant="outline">
+              {/* <Button variant="outline">
                 <Pencil className="w-4 h-4 mr-2" /> Edit Profile
-              </Button>
+              </Button> */}
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="info" className="w-full">
@@ -75,8 +72,12 @@ export default function Edit({
                       <div className="flex flex-wrap gap-2">
                         {auth.user.roles && auth.user.roles.length > 0 ? (
                           auth.user.roles.map(({ id, name }) => (
-                            <Badge key={id} variant="secondary">
-                              {name}
+                            <Badge
+                              key={id}
+                              variant="secondary"
+                              className="capitalize"
+                            >
+                              {name.replace(/-/g, " ")}
                             </Badge>
                           ))
                         ) : (
@@ -94,8 +95,12 @@ export default function Edit({
                         {auth.user.permissions &&
                         auth.user.permissions.length > 0 ? (
                           auth.user.permissions.map(({ id, name }) => (
-                            <Badge key={id} variant="outline">
-                              {name}
+                            <Badge
+                              key={id}
+                              variant="outline"
+                              className="capitalize"
+                            >
+                              {name.replace(/-/g, " ")}
                             </Badge>
                           ))
                         ) : (
