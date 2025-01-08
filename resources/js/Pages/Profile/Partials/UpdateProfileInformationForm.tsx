@@ -1,17 +1,12 @@
-import InputError from "@/Components/InputError";
-import InputLabel from "@/Components/InputLabel";
-import PrimaryButton from "@/Components/PrimaryButton";
-import TextInput from "@/Components/TextInput";
-import { Link, useForm, usePage } from "@inertiajs/react";
-import { Transition } from "@headlessui/react";
-import { FormEventHandler } from "react";
-import { PageProps } from "@/types";
-import { useToast } from "@/hooks/use-toast";
-import { Label } from "@/Components/ui/label";
-import { Input } from "@/Components/ui/input";
 import { Alert, AlertDescription } from "@/Components/ui/alert";
 import { Button } from "@/Components/ui/button";
+import { Input } from "@/Components/ui/input";
+import { Label } from "@/Components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import { PageProps } from "@/types";
+import { Link, useForm, usePage } from "@inertiajs/react";
 import { CheckCircle, Loader2, XCircle } from "lucide-react";
+import { FormEventHandler } from "react";
 
 interface UpdateProfileInformationProps {
   mustVerifyEmail: boolean;

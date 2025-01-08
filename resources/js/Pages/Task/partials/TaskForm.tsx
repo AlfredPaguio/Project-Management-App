@@ -27,15 +27,16 @@ import {
   SelectValue,
 } from "@/Components/ui/select";
 import { Textarea } from "@/Components/ui/textarea";
-import { priorities, statuses } from "@/constant";
+import { MAX_IMAGE_SIZE, priorities, statuses } from "@/constant";
 
+import { Label } from "@/Components/ui/label";
 import { ProjectDataType } from "@/types/project";
 import { PublicUser } from "@/types/user";
 import { cn } from "@/utils/cn";
 import { getImageData } from "@/utils/getImageData";
 import { Link } from "@inertiajs/react";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, UploadIcon } from "lucide-react";
 
 interface TaskFormProps {
   form: UseFormReturn<FormDataType>;
@@ -57,21 +58,44 @@ function TaskForm({ form, onSubmit, users, projects }: TaskFormProps) {
           render={({ field: { onChange, value, ...props } }) => (
             <FormItem>
               <FormLabel>Image</FormLabel>
-              <img
-                src={preview}
-                alt="N/A"
-                className="w-full h-64 object-contain"
-              />
               <FormControl>
-                <Input
-                  type="file"
-                  onChange={(event) => {
-                    const { files, displayUrl } = getImageData(event);
-                    setPreview(displayUrl);
-                    onChange(files);
-                  }}
-                  {...props}
-                />
+                <div className="flex items-center justify-center w-full">
+                  <Label
+                    htmlFor="image-file"
+                    className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
+                  >
+                    {preview ? (
+                      <img
+                        src={preview}
+                        alt="Image preview"
+                        className="w-full h-64 object-contain rounded-lg"
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <UploadIcon className="w-10 h-10 mb-3 text-gray-400" />
+                        <p className="mb-2 text-sm text-gray-500">
+                          <span className="font-semibold">Click to upload</span>{" "}
+                          or drag and drop
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          PNG, JPG, GIF up to {MAX_IMAGE_SIZE}MB
+                        </p>
+                      </div>
+                    )}
+
+                    <Input
+                      id="image-file"
+                      type="file"
+                      className="hidden"
+                      onChange={(event) => {
+                        const { files, displayUrl } = getImageData(event);
+                        setPreview(displayUrl);
+                        onChange(files);
+                      }}
+                      {...props}
+                    />
+                  </Label>
+                </div>
               </FormControl>
               <FormDescription>This is your task image.</FormDescription>
               <FormMessage />

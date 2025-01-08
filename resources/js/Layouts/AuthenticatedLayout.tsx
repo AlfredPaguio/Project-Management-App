@@ -120,7 +120,7 @@ export default function Authenticated({
                     {navItems.map((item) => (
                       <Link
                         key={item.href}
-                        href={item.href}
+                        href={route(item.href)}
                         className={`text-sm font-medium transition-colors hover:text-primary ${
                           route().current(item.href)
                             ? "text-primary"
