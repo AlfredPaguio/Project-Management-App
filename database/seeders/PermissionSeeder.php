@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -12,26 +12,34 @@ class PermissionSeeder extends Seeder
 {
     public function run()
     {
-        Role::create(['name' => 'admin']);
-        Role::create(['name' => 'manager']);
-        Role::create(['name' => 'user']);
+        $roles = ['admin', 'manager', 'user'];
+        $permissions = [
+            'tasks.view',
+            'tasks.edit',
+            'projects.manage',
+            'users.manage',
+        ];
 
-        Permission::create(['name' => 'view tasks']);
-        Permission::create(['name' => 'edit tasks']);
+        foreach ($roles as $role) {
+            Role::create(['name' => $role]);
+        }
 
-        Permission::create(['name' => 'manage-projects']);
-        Permission::create(['name' => 'manage-users']);
-
-        $adminRole = Role::findByName('admin');
-        $adminRole->givePermissionTo(['view tasks', 'edit tasks', 'manage-projects', 'manage-users']);
-
-        $managerRole = Role::findByName('manager');
-        $managerRole->givePermissionTo(['view tasks', 'edit tasks', 'manage-projects']);
-
-        $userRole = Role::findByName('user');
-        $userRole->givePermissionTo(['view tasks']);
+        foreach ($permissions as $permission) {
+            Permission::create(['name' => $permission]);
+        }
 
         $user = User::find(1);
         $user->assignRole('admin');
+
+        $rolePermissions = [
+            'admin' => $permissions,
+            'manager' => ['tasks.view', 'tasks.edit', 'projects.manage'],
+            'user' => ['tasks.view'],
+        ];
+
+        foreach ($rolePermissions as $role => $permissions) {
+            $role = Role::findByName($role);
+            $role->givePermissionTo($permissions);
+        }
     }
 }

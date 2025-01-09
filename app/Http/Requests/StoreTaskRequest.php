@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Foundation\Http\FormRequest;
 
 class StoreTaskRequest extends FormRequest
 {
@@ -62,9 +62,12 @@ class StoreTaskRequest extends FormRequest
             'name.required' => 'The name is required.',
             'name.min' => 'The name must be at least 2 characters.',
             'status.required' => 'The status is required.',
+            'image.max' => 'The maximum image size is ' . self::MAX_IMAGE_SIZE * 1024 . 'MB',
+            'image.mimes' => 'File type is not supported',
+            'priority.in' => 'Task priority is required.',
             'status.in' => 'The selected status is invalid.',
-            'description.string' => 'The description must be a string.',
-            'description.min' => 'The description must be at least 2 characters.',
+            'descrition must be at least 2ption.string' => 'The description must be a string.',
+            'description.min' => 'The descrip characters.',
             'due_date.date' => 'The due date is not a valid date.',
         ];
     }
