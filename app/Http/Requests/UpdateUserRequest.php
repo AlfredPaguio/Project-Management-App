@@ -25,26 +25,42 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => ["required", "string", "max:255"],
-            "email" => [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => [
                 'required',
                 'string',
-                'lowercase',
+                // 'lowercase',
                 'email',
                 'max:255',
+                Rule::unique('users')->ignore($this->user),
             ],
-            "password" => [
+            'password' => [
                 'nullable',
                 'confirmed',
                 Password::min(8)->letters()->symbols(),
             ],
-            "avatar" => [
-                "nullable",
-                "image",
-                "max:1024",
+            'avatar' => [
+                'nullable',
+                'image',
+                'max:1024',
             ],
-            "roles" => "array",
-            "permissions" => "array"
+            'roles' => [
+                'array',
+                'nullable',
+                Rule::exists('roles', 'id'),
+            ],
+            'permissions' => [
+                'array',
+                'nullable',
+                Rule::exists('permissions', 'id'),
+            ],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'password.confirmed' => "Passwords don't match",
         ];
     }
 }
