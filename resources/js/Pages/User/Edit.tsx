@@ -12,20 +12,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/Components/ui/card";
-import { Checkbox } from "@/Components/ui/checkbox";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
+  Form
 } from "@/Components/ui/form";
 
+import { Alert, AlertDescription, AlertTitle } from "@/Components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/Components/ui/tabs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft } from "lucide-react";
+import { AlertCircle, ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
+import PermissionsSelection from "./partials/PermissionsSelection";
+import RolesSelection from "./partials/RolesSelection";
 import UserDetailsForm from "./partials/UserDetailsForm";
 import { FormDataType, formSchema } from "./schema/formSchema";
 
@@ -41,7 +38,6 @@ export default function Edit({
   roles,
   permissions,
 }: PageProps & UserPageProps) {
-  
   const form = useForm<FormDataType>({
     values: {
       name: user.name,
@@ -68,14 +64,18 @@ export default function Edit({
     if (values.avatar) {
       formData.append("avatar", values.avatar);
     }
-    values.roles.forEach((roleId) =>
-      formData.append("roles[]", roleId.toString())
-    );
-    values.permissions.forEach((permissionId) =>
-      formData.append("permissions[]", permissionId.toString())
-    );
-    formData.append("_method", "PATCH");
+    if (values.roles) {
+      values.roles.forEach((roleId) =>
+        formData.append("roles[]", roleId.toString())
+      );
+    }
 
+    if (values.permissions) {
+      values.permissions.forEach((permissionId) =>
+        formData.append("permissions[]", permissionId.toString())
+      );
+    }
+    formData.append("_method", "PATCH");
     router.post(route("user.update", user.id), formData);
   }
 
@@ -98,6 +98,20 @@ export default function Edit({
       }
     >
       <Head title="Users" />
+
+      {Object.keys(form.formState.errors).length > 0 && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>
+            <ul>
+              {Object.entries(form.formState.errors).map(([key, error]) => (
+                <li key={key}>{error.message}</li>
+              ))}
+            </ul>
+          </AlertDescription>
+        </Alert>
+      )}
 
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -122,109 +136,12 @@ export default function Edit({
                       <UserDetailsForm form={form} user={user} />
                     </TabsContent>
                     <TabsContent value="roles" className="space-y-4">
-                      <FormField
-                        control={form.control}
-                        name="roles"
-                        render={() => (
-                          <FormItem>
-                            <FormLabel>Roles</FormLabel>
-                            <div className="space-y-2">
-                              {roles.map((role) => (
-                                <FormField
-                                  key={role.id}
-                                  control={form.control}
-                                  name="roles"
-                                  render={({ field }) => {
-                                    return (
-                                      <FormItem
-                                        key={role.id}
-                                        className="flex flex-row items-start space-x-3 space-y-0"
-                                      >
-                                        <FormControl>
-                                          <Checkbox
-                                            checked={field.value?.includes(
-                                              role.id
-                                            )}
-                                            onCheckedChange={(checked) => {
-                                              return checked
-                                                ? field.onChange([
-                                                    ...field.value,
-                                                    role.id,
-                                                  ])
-                                                : field.onChange(
-                                                    field.value?.filter(
-                                                      (value) =>
-                                                        value !== role.id
-                                                    )
-                                                  );
-                                            }}
-                                          />
-                                        </FormControl>
-                                        <FormLabel className="font-normal capitalize">
-                                          {role.name.replace(/-/g, " ")}
-                                        </FormLabel>
-                                      </FormItem>
-                                    );
-                                  }}
-                                />
-                              ))}
-                            </div>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                      <RolesSelection form={form} roles={roles} />
                     </TabsContent>
                     <TabsContent value="permissions" className="space-y-4">
-                      <FormField
-                        control={form.control}
-                        name="permissions"
-                        render={() => (
-                          <FormItem>
-                            <FormLabel>Permissions</FormLabel>
-                            <div className="space-y-2">
-                              {permissions.map((permission) => (
-                                <FormField
-                                  key={permission.id}
-                                  control={form.control}
-                                  name="permissions"
-                                  render={({ field }) => {
-                                    return (
-                                      <FormItem
-                                        key={permission.id}
-                                        className="flex flex-row items-start space-x-3 space-y-0"
-                                      >
-                                        <FormControl>
-                                          <Checkbox
-                                            checked={field.value?.includes(
-                                              permission.id
-                                            )}
-                                            onCheckedChange={(checked) => {
-                                              return checked
-                                                ? field.onChange([
-                                                    ...field.value,
-                                                    permission.id,
-                                                  ])
-                                                : field.onChange(
-                                                    field.value?.filter(
-                                                      (value) =>
-                                                        value !== permission.id
-                                                    )
-                                                  );
-                                            }}
-                                          />
-                                        </FormControl>
-                                        <FormLabel className="font-normal capitalize">
-                                          {permission.name.replace(/-/g, " ")}
-                                        </FormLabel>
-                                      </FormItem>
-                                    );
-                                  }}
-                                />
-                              ))}
-                            </div>
-                            <FormMessage />
-                          </FormItem>
-                        )}
+                      <PermissionsSelection
+                        form={form}
+                        permissions={permissions}
                       />
                     </TabsContent>
                   </Tabs>

@@ -23,8 +23,8 @@ export const formSchema = z
       .or(z.literal("")) //pls work
       .optional(),
     avatar: z.instanceof(File).optional(),
-    roles: z.array(z.number()),
-    permissions: z.array(z.number()),
+    roles: z.array(z.number()).optional(),
+    permissions: z.array(z.number()).optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
