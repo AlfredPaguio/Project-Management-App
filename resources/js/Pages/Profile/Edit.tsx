@@ -10,6 +10,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/Components/ui/tabs";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { PageProps } from "@/types";
+import { replaceQuotesAndDots } from "@/utils/replaceQuotesAndDots";
 import { Head } from "@inertiajs/react";
 import DeleteUserForm from "./Partials/DeleteUserForm";
 import UpdatePasswordForm from "./Partials/UpdatePasswordForm";
@@ -77,7 +78,7 @@ export default function Edit({
                               variant="secondary"
                               className="capitalize"
                             >
-                              {name.replace(/-/g, " ")}
+                              {replaceQuotesAndDots(name)}
                             </Badge>
                           ))
                         ) : (
@@ -100,7 +101,7 @@ export default function Edit({
                               variant="outline"
                               className="capitalize"
                             >
-                              {name.replace(/-/g, " ")}
+                              {replaceQuotesAndDots(name)}
                             </Badge>
                           ))
                         ) : (

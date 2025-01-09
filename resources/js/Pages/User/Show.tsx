@@ -12,6 +12,7 @@ import { Label } from "@/Components/ui/label";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { PageProps } from "@/types";
 import { User } from "@/types/user";
+import { replaceQuotesAndDots } from "@/utils/replaceQuotesAndDots";
 import { Head, Link } from "@inertiajs/react";
 import { ArrowLeft, Pencil } from "lucide-react";
 
@@ -70,8 +71,8 @@ export default function Show({ auth, user }: PageProps & UserPageProps) {
                   <div className="flex flex-wrap gap-2 mt-2">
                     {user.roles && user.roles.length > 0 ? (
                       user.roles.map((role) => (
-                        <Badge key={role.id} variant="secondary">
-                          {role.name}
+                        <Badge key={role.id} variant="secondary" className="capitalize">
+                          {replaceQuotesAndDots(role.name)}
                         </Badge>
                       ))
                     ) : (
@@ -84,8 +85,8 @@ export default function Show({ auth, user }: PageProps & UserPageProps) {
                   <div className="flex flex-wrap gap-2 mt-2">
                     {user.permissions && user.permissions.length > 0 ? (
                       user.permissions.map((permission) => (
-                        <Badge key={permission.id} variant="outline">
-                          {permission.name}
+                        <Badge key={permission.id} variant="outline" className="capitalize">
+                          {replaceQuotesAndDots(permission.name)}
                         </Badge>
                       ))
                     ) : (
