@@ -108,7 +108,6 @@ class CustomImageProvider extends Base
         $grayscale = false,
         $format = 'jpg'
     ) {
-
         $dir = null === $dir ? sys_get_temp_dir() : $dir;
 
         // Validate directory path
