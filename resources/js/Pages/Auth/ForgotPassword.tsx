@@ -1,3 +1,4 @@
+import LoadingSpinner from "@/Components/LoadingSpinner";
 import { Alert, AlertDescription } from "@/Components/ui/alert";
 import { Button } from "@/Components/ui/button";
 import {
@@ -66,11 +67,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
             <Button type="submit" className="w-full" disabled={processing}>
               {processing ? (
                 <>
-                  <div
-                    className="animate-spin inline-block size-6 border-[3px] border-current border-t-transparent text-blue-600 rounded-full dark:text-blue-500"
-                    role="status"
-                    aria-label="Sending reset link..."
-                  />
+                  <LoadingSpinner aria-label="Sending reset link..." />
                   Sending reset link...
                 </>
               ) : (
