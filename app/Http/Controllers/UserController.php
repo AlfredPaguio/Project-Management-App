@@ -34,7 +34,7 @@ class UserController extends Controller
         $roles = Role::all();
         $permissions = Permission::all();
 
-        return inertia("user/create", [
+        return inertia("User/Create", [
             'roles' => $roles,
             'permissions' => $permissions,
         ]);
