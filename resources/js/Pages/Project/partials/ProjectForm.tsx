@@ -33,15 +33,18 @@ import { CalendarIcon, UploadIcon } from "lucide-react";
 import { useState } from "react";
 import { SubmitHandler, UseFormReturn } from "react-hook-form";
 import { FormDataType } from "../schema/formSchema";
+import { ProjectDataType } from "@/types/project";
 
 interface ProjectFormProps {
   form: UseFormReturn<FormDataType>;
-  projectID?: string | number;
+  project? : Pick<ProjectDataType, "id" | "image_path">;
   onSubmit: SubmitHandler<FormDataType>;
 }
 
-function ProjectForm({ form, projectID, onSubmit }: ProjectFormProps) {
-  const [preview, setPreview] = useState("");
+function ProjectForm({ form, project, onSubmit }: ProjectFormProps) {
+  const [preview, setPreview] = useState<string | null>(
+    project?.image_path || null
+  );
 
   return (
     <Form {...form}>
@@ -62,7 +65,7 @@ function ProjectForm({ form, projectID, onSubmit }: ProjectFormProps) {
                       <img
                         src={preview}
                         alt="Image preview"
-                        className="w-full h-64 object-contain rounded-lg"
+                        className="w-full h-64 object-cover"
                       />
                     ) : (
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -92,7 +95,7 @@ function ProjectForm({ form, projectID, onSubmit }: ProjectFormProps) {
                 </div>
               </FormControl>
               <FormDescription>
-                {projectID
+                {project
                   ? "Upload a new image or keep the existing one."
                   : "Upload an image for your project."}
               </FormDescription>
@@ -110,7 +113,7 @@ function ProjectForm({ form, projectID, onSubmit }: ProjectFormProps) {
                 <Input {...field} />
               </FormControl>
               <FormDescription>
-                {projectID
+                {project
                   ? "Update the name of your project."
                   : "Provide a name for your project."}
               </FormDescription>
@@ -128,7 +131,7 @@ function ProjectForm({ form, projectID, onSubmit }: ProjectFormProps) {
                 <Textarea {...field} />
               </FormControl>
               <FormDescription>
-                {projectID
+                {project
                   ? "Update the project description (optional)."
                   : "Describe your project (optional)."}
               </FormDescription>
@@ -172,7 +175,7 @@ function ProjectForm({ form, projectID, onSubmit }: ProjectFormProps) {
                 </PopoverContent>
               </Popover>
               <FormDescription>
-                {projectID ? "Update" : "Set"} the project deadline (optional).
+                {project ? "Update" : "Set"} the project deadline (optional).
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -204,7 +207,7 @@ function ProjectForm({ form, projectID, onSubmit }: ProjectFormProps) {
                 </SelectContent>
               </Select>
               <FormDescription>
-                {projectID ? "Update" : "Set"} the current status of your
+                {project ? "Update" : "Set"} the current status of your
                 project.
               </FormDescription>
               <FormMessage />
@@ -215,8 +218,8 @@ function ProjectForm({ form, projectID, onSubmit }: ProjectFormProps) {
           <Button type="button" variant="outline" asChild>
             <Link
               href={
-                projectID
-                  ? route("project.show", projectID)
+                project
+                  ? route("project.show", project.id)
                   : route("project.index")
               }
             >
@@ -224,7 +227,7 @@ function ProjectForm({ form, projectID, onSubmit }: ProjectFormProps) {
             </Link>
           </Button>
           <Button type="submit">
-            {projectID ? "Update" : "Create"} Project
+            {project ? "Update" : "Create"} Project
           </Button>
         </div>
       </form>

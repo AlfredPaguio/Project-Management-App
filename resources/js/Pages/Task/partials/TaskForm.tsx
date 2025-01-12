@@ -37,17 +37,21 @@ import { getImageData } from "@/utils/getImageData";
 import { Link } from "@inertiajs/react";
 import { format } from "date-fns";
 import { CalendarIcon, UploadIcon } from "lucide-react";
+import { TaskDataType } from "@/types/task";
 
 interface TaskFormProps {
   form: UseFormReturn<FormDataType>;
   onSubmit: SubmitHandler<FormDataType>;
   users: PublicUser[];
   projects: ProjectDataType[];
+  task?: Pick<TaskDataType, "image_path">;
 }
 
 // prop drilling pls don't do this
-function TaskForm({ form, onSubmit, users, projects }: TaskFormProps) {
-  const [preview, setPreview] = useState("");
+function TaskForm({ form, onSubmit, task, users, projects }: TaskFormProps) {
+  const [preview, setPreview] = useState<string | null>(
+    task?.image_path || null
+  );
 
   return (
     <Form {...form}>
@@ -68,7 +72,7 @@ function TaskForm({ form, onSubmit, users, projects }: TaskFormProps) {
                       <img
                         src={preview}
                         alt="Image preview"
-                        className="w-full h-64 object-contain rounded-lg"
+                        className="w-full h-64 object-cover"
                       />
                     ) : (
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">

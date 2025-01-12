@@ -89,6 +89,7 @@ export default function Edit({
                 onSubmit={onSubmit}
                 projects={projects.data}
                 users={users.data}
+                task={task}
               />
             </CardContent>
           </Card>
