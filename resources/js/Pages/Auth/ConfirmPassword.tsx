@@ -1,3 +1,4 @@
+import LoadingSpinner from "@/Components/LoadingSpinner";
 import { Alert, AlertDescription } from "@/Components/ui/alert";
 import { Button } from "@/Components/ui/button";
 import {
@@ -81,11 +82,7 @@ export default function ConfirmPassword() {
             <Button type="submit" className="w-full" disabled={processing}>
               {processing ? (
                 <>
-                  <div
-                    className="animate-spin inline-block size-6 border-[3px] border-current border-t-transparent text-blue-600 rounded-full dark:text-blue-500"
-                    role="status"
-                    aria-label="Confirming..."
-                  />
+                  <LoadingSpinner aria-label="Confirming..." />
                   Confirming...
                 </>
               ) : (

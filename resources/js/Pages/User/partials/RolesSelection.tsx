@@ -15,6 +15,7 @@ import { Search } from "lucide-react";
 import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { FormDataType } from "../schema/formSchema";
+import { Button } from "@/Components/ui/button";
 
 interface RolesSelectionProps {
   form: UseFormReturn<FormDataType>;
@@ -28,6 +29,15 @@ function RolesSelection({ form, roles }: RolesSelectionProps) {
   const filteredRoles = roles.filter((role) =>
     role.name.toLowerCase().includes(searchRoles.toLowerCase())
   );
+
+  const handleCheckAll = () => {
+    const allRoleIds = roles.map((role) => role.id);
+    form.setValue("roles", allRoleIds);
+  };
+
+  const handleUncheckAll = () => {
+    form.reset({ roles: [] });
+  };
 
   return (
     <div className="space-y-4">
@@ -43,6 +53,22 @@ function RolesSelection({ form, roles }: RolesSelectionProps) {
           onChange={(e) => setSearchRoles(e.target.value)}
           className="max-w-sm"
         />
+        <Button
+          onClick={handleCheckAll}
+          type="button"
+          variant="outline"
+          size="sm"
+        >
+          Check All
+        </Button>
+        <Button
+          onClick={handleUncheckAll}
+          type="button"
+          variant="outline"
+          size="sm"
+        >
+          Uncheck All
+        </Button>
       </div>
       <ScrollArea className="h-[300px] rounded-md border p-4">
         <div className="grid grid-cols-2 gap-4">

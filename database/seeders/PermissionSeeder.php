@@ -12,29 +12,35 @@ class PermissionSeeder extends Seeder
 {
     public function run()
     {
-        $roles = ['admin', 'manager', 'user'];
+        // https://spatie.be/docs/laravel-permission/v6/advanced-usage/seeding
+        // Reset cached roles and permissions
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
         $permissions = [
             'tasks.view',
-            'tasks.edit',
+            'tasks.manage',
+            'tasks.manage.own',
             'projects.manage',
+            'projects.manage.own',
             'users.manage',
         ];
-
-        foreach ($roles as $role) {
-            Role::create(['name' => $role]);
-        }
 
         foreach ($permissions as $permission) {
             Permission::create(['name' => $permission]);
         }
 
-        $user = User::find(1);
-        $user->assignRole('admin');
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
+        $roles = ['Super Admin', 'Admin', 'Manager', 'User'];
+
+        foreach ($roles as $role) {
+            Role::create(['name' => $role]);
+        }
 
         $rolePermissions = [
-            'admin' => $permissions,
-            'manager' => ['tasks.view', 'tasks.edit', 'projects.manage'],
-            'user' => ['tasks.view'],
+            'Admin' => $permissions,
+            'Manager' => ['tasks.view', 'tasks.manage', 'tasks.manage.own', 'projects.manage', 'projects.manage.own'],
+            'User' => ['tasks.view', 'tasks.manage.own', 'projects.manage.own'],
         ];
 
         foreach ($rolePermissions as $role => $permissions) {

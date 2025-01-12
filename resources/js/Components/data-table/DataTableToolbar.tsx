@@ -1,4 +1,4 @@
-import { priorities, statuses } from "@/constant";
+import { priorities, roles, statuses } from "@/constant";
 import { Table } from "@tanstack/react-table";
 import { XIcon } from "lucide-react";
 import { Button } from "../ui/button";
@@ -51,6 +51,13 @@ function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
             column={table.getColumn("priority")}
             title="Priority"
             options={priorities}
+          />
+        )}
+        {table.getAllColumns().find((x) => x.id === "roles") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("roles")}
+            title="Roles"
+            options={roles}
           />
         )}
         {isFiltered && (

@@ -43,6 +43,28 @@ export const statuses = [
   },
 ];
 
+
+export const roles = [
+  // will not show in the filter
+  // {
+  //   value: "Super Admin",
+  //   label: "Super Admin",
+  // },
+  {
+    value: "Admin",
+    label: "Administrator",
+  },
+  {
+    value: "Manager",
+    label: "Manager",
+  },
+  // All registered users are users
+  // {
+  //   value: "User",
+  //   label: "User",
+  // },
+];
+
 export const priorities = [
   {
     label: "Low",
