@@ -71,7 +71,7 @@ export default function Edit({ auth, project }: PageProps & ProjectPageProps) {
               <ProjectForm
                 form={form}
                 onSubmit={onSubmit}
-                projectID={project.id}
+                project={project}
               />
             </CardContent>
           </Card>
