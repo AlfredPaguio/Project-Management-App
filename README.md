@@ -4,6 +4,8 @@
 
 This is a project management web application built with Laravel, React, TypeScript, and TailwindCSS. It allows users to manage projects, tasks, and user permissions.
 
+The project structure and concepts are inspired by the **[The Codeholic Tutorial: Laravel 11 + React Full Stack App with Inertia - Project Management App](https://www.youtube.com/watch?v=VrQRa-afCAk)**: **[laravel11-react-spa](https://github.com/thecodeholic/laravel11-react-spa)**, but with custom implementations, more applied concepts, different UI, and more additional features.
+
 ## Features
 
 -   **Project Management**: Create, update, and manage projects with a due date and status.
