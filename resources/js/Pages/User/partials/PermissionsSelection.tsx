@@ -20,6 +20,7 @@ import { ChevronDown, Search } from "lucide-react";
 import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { FormDataType } from "../schema/formSchema";
+import { Button } from "@/Components/ui/button";
 
 type PermissionsSelectionProps = {
   permissions: Permission[];
@@ -41,6 +42,16 @@ function PermissionsSelection({
     return acc;
   }, {} as Record<string, Permission[]>);
 
+  const handleCheckAll = () => {
+    const allPermissionIds = permissions.map((permission) => permission.id);
+    form.setValue('permissions', allPermissionIds);
+  };
+
+  const handleUncheckAll = () => {
+    // form.setValue("permissions", []);
+    form.reset({ permissions: [] });
+  };
+
   return (
     <div className="space-y-4">
       <div className="mb-4">
@@ -57,6 +68,12 @@ function PermissionsSelection({
           onChange={(e) => setSearchPermissions(e.target.value)}
           className="max-w-sm"
         />
+        <Button onClick={handleCheckAll} type="button" variant="outline" size="sm">
+          Check All
+        </Button>
+        <Button onClick={handleUncheckAll} type="button" variant="outline" size="sm">
+          Uncheck All
+        </Button>
       </div>
       <ScrollArea className="h-[400px] rounded-md border p-4">
         {Object.entries(groupedPermissions)

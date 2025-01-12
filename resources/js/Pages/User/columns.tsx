@@ -6,7 +6,7 @@ import { Badge } from "@/Components/ui/badge";
 
 import { Button } from "@/Components/ui/button";
 import { Checkbox } from "@/Components/ui/checkbox";
-import { User } from "@/types/user";
+import { Role, User } from "@/types/user";
 import { Link } from "@inertiajs/react";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
@@ -104,6 +104,11 @@ export const columns: ColumnDef<User>[] = [
           )}
         </div>
       );
+    },
+    filterFn: (row, id, value) => {
+      const rowValue: Role[] = row.getValue(id);
+
+      return rowValue.some((item) => value.includes(item.name));
     },
   },
   {
