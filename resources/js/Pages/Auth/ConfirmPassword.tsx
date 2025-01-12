@@ -1,59 +1,100 @@
-import { useEffect, FormEventHandler } from 'react';
-import GuestLayout from '@/Layouts/GuestLayout';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import { Head, useForm } from '@inertiajs/react';
+import { Alert, AlertDescription } from "@/Components/ui/alert";
+import { Button } from "@/Components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/Components/ui/card";
+import { Input } from "@/Components/ui/input";
+import { Label } from "@/Components/ui/label";
+import GuestLayout from "@/Layouts/GuestLayout";
+import { Head, useForm } from "@inertiajs/react";
+import { EyeOffIcon, EyeIcon } from "lucide-react";
+import { FormEventHandler, useEffect, useState } from "react";
 
 export default function ConfirmPassword() {
-    const { data, setData, post, processing, errors, reset } = useForm({
-        password: '',
-    });
+  const { data, setData, post, processing, errors, reset } = useForm({
+    password: "",
+  });
 
-    useEffect(() => {
-        return () => {
-            reset('password');
-        };
-    }, []);
+  const [showPassword, setShowPassword] = useState(false);
 
-    const submit: FormEventHandler = (e) => {
-        e.preventDefault();
-
-        post(route('password.confirm'));
+  useEffect(() => {
+    return () => {
+      reset("password");
     };
+  }, []);
 
-    return (
-        <GuestLayout>
-            <Head title="Confirm Password" />
+  const submit: FormEventHandler = (e) => {
+    e.preventDefault();
 
-            <div className="mb-4 text-sm text-gray-600">
-                This is a secure area of the application. Please confirm your password before continuing.
+    post(route("password.confirm"));
+  };
+
+  return (
+    <GuestLayout>
+      <Head title="Confirm Password" />
+
+      <Card className="w-full max-w-md mx-auto">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold">Confirm Password</CardTitle>
+          <CardDescription>
+            This is a secure area of the application. Please confirm your
+            password before continuing.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={submit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  value={data.password}
+                  onChange={(e) => setData("password", e.target.value)}
+                  required
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <EyeOffIcon className="h-4 w-4" />
+                  ) : (
+                    <EyeIcon className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
+              {errors.password && (
+                <Alert variant="destructive">
+                  <AlertDescription>{errors.password}</AlertDescription>
+                </Alert>
+              )}
             </div>
-
-            <form onSubmit={submit}>
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        isFocused={true}
-                        onChange={(e) => setData('password', e.target.value)}
-                    />
-
-                    <InputError message={errors.password} className="mt-2" />
-                </div>
-
-                <div className="flex items-center justify-end mt-4">
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Confirm
-                    </PrimaryButton>
-                </div>
-            </form>
-        </GuestLayout>
-    );
+            <Button type="submit" className="w-full" disabled={processing}>
+              {processing ? (
+                <>
+                  <div
+                    className="animate-spin inline-block size-6 border-[3px] border-current border-t-transparent text-blue-600 rounded-full dark:text-blue-500"
+                    role="status"
+                    aria-label="Confirming..."
+                  />
+                  Confirming...
+                </>
+              ) : (
+                "Confirm"
+              )}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    </GuestLayout>
+  );
 }

@@ -1,4 +1,3 @@
-import Checkbox from "@/Components/Checkbox";
 import { Alert, AlertDescription } from "@/Components/ui/alert";
 import { Button } from "@/Components/ui/button";
 import {
@@ -9,11 +8,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/Components/ui/card";
+import { Checkbox } from "@/Components/ui/checkbox";
 import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
 import GuestLayout from "@/Layouts/GuestLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
-import { FormEventHandler, useEffect } from "react";
+import { EyeOffIcon, EyeIcon } from "lucide-react";
+import { FormEventHandler, useEffect, useState } from "react";
 
 export default function Login({
   status,
@@ -27,6 +28,8 @@ export default function Login({
     password: "",
     remember: false,
   });
+
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -58,73 +61,101 @@ export default function Login({
             </Alert>
           )}
 
-          <form onSubmit={submit}>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  name="email"
-                  value={data.email}
-                  autoComplete="username"
-                  autoFocus
-                  onChange={(e) => setData("email", e.target.value)}
-                />
-                {errors.email && (
-                  <Alert variant="destructive">
-                    <AlertDescription>{errors.email}</AlertDescription>
-                  </Alert>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+          <form onSubmit={submit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="m@example.com"
+                autoComplete="username"
+                value={data.email}
+                onChange={(e) => setData("email", e.target.value)}
+                required
+              />
+              {errors.email && (
+                <Alert variant="destructive">
+                  <AlertDescription>{errors.email}</AlertDescription>
+                </Alert>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <div className="relative">
                 <Input
                   id="password"
-                  type="password"
-                  name="password"
-                  value={data.password}
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
                   autoComplete="current-password"
+                  value={data.password}
                   onChange={(e) => setData("password", e.target.value)}
+                  required
                 />
-                {errors.password && (
-                  <Alert variant="destructive">
-                    <AlertDescription>{errors.password}</AlertDescription>
-                  </Alert>
-                )}
-              </div>
-
-              <div className="flex items-center">
-                <Checkbox
-                  id="remember"
-                  name="remember"
-                  checked={data.remember}
-                  onChange={(e) =>
-                    setData("remember", e.target.checked as boolean)
-                  }
-                />
-                <Label htmlFor="remember" className="ml-2">
-                  Remember me
-                </Label>
-              </div>
-            </div>
-
-            <CardFooter className="flex justify-between mt-6">
-              {canResetPassword && (
-                <Button variant={"link"} className="text-sm" asChild>
-                  <Link href={route("password.request")}>
-                    Forgot your password?
-                  </Link>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <EyeOffIcon className="h-4 w-4" />
+                  ) : (
+                    <EyeIcon className="h-4 w-4" />
+                  )}
                 </Button>
+              </div>
+              {errors.password && (
+                <Alert variant="destructive">
+                  <AlertDescription>{errors.password}</AlertDescription>
+                </Alert>
               )}
-
-              <Button type="submit" disabled={processing}>
-                Log in
-              </Button>
-            </CardFooter>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="remember"
+                checked={data.remember}
+                onCheckedChange={(checked) =>
+                  setData("remember", checked as boolean)
+                }
+              />
+              <Label htmlFor="remember">Remember me</Label>
+            </div>
+            <Button type="submit" className="w-full" disabled={processing}>
+              {processing ? (
+                <>
+                  <div
+                    className="animate-spin inline-block size-6 border-[3px] border-current border-t-transparent text-blue-600 rounded-full dark:text-blue-500"
+                    role="status"
+                    aria-label="Logging in..."
+                  />
+                  Logging in...
+                </>
+              ) : (
+                "Log in"
+              )}
+            </Button>
           </form>
         </CardContent>
+        <CardFooter className="flex flex-wrap items-center justify-between gap-2">
+          <div className="text-sm text-muted-foreground">
+            Don't have an account?{" "}
+            <Link
+              href={route("register")}
+              className="text-primary underline-offset-4 transition-colors hover:underline"
+            >
+              Sign up
+            </Link>
+          </div>
+          {canResetPassword && (
+            <Link
+              href={route("password.request")}
+              className="text-sm text-primary underline-offset-4 transition-colors hover:underline"
+            >
+              Forgot password?
+            </Link>
+          )}
+        </CardFooter>
       </Card>
     </GuestLayout>
   );

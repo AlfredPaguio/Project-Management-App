@@ -1,8 +1,16 @@
+import { Alert, AlertDescription } from "@/Components/ui/alert";
+import { Button } from "@/Components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/Components/ui/card";
 import GuestLayout from "@/Layouts/GuestLayout";
-import PrimaryButton from "@/Components/PrimaryButton";
 import { Head, Link, useForm } from "@inertiajs/react";
 import { FormEventHandler } from "react";
-import { Card } from "@/Components/ui/card";
 
 export default function VerifyEmail({ status }: { status?: string }) {
   const { post, processing } = useForm({});
@@ -16,36 +24,52 @@ export default function VerifyEmail({ status }: { status?: string }) {
   return (
     <GuestLayout>
       <Head title="Email Verification" />
-      <Card className="p-4">
-        <div className="mb-4 text-sm text-gray-600">
-          Thanks for signing up! Before getting started, could you verify your
-          email address by clicking on the link we just emailed to you? If you
-          didn't receive the email, we will gladly send you another.
-        </div>
-
-        {status === "verification-link-sent" && (
-          <div className="mb-4 font-medium text-sm text-green-600">
-            A new verification link has been sent to the email address you
-            provided during registration.
-          </div>
-        )}
-
-        <form onSubmit={submit}>
-          <div className="mt-4 flex items-center justify-between">
-            <PrimaryButton disabled={processing}>
-              Resend Verification Email
-            </PrimaryButton>
-
-            <Link
-              href={route("logout")}
-              method="post"
-              as="button"
-              className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Log Out
-            </Link>
-          </div>
-        </form>
+      <Card className="w-full max-w-md mx-auto">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold">
+            Email Verification
+          </CardTitle>
+          <CardDescription>
+            Thanks for signing up! Before getting started, could you verify your
+            email address by clicking on the link we just emailed to you?
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {status === "verification-link-sent" && (
+            <Alert className="mb-4">
+              <AlertDescription>
+                A new verification link has been sent to the email address you
+                provided during registration.
+              </AlertDescription>
+            </Alert>
+          )}
+          <form onSubmit={submit}>
+            <Button type="submit" className="w-full" disabled={processing}>
+              {processing ? (
+                <>
+                  <div
+                    className="animate-spin inline-block size-6 border-[3px] border-current border-t-transparent text-blue-600 rounded-full dark:text-blue-500"
+                    role="status"
+                    aria-label="Resending verification email..."
+                  />
+                  Resending verification email...
+                </>
+              ) : (
+                "Resend Verification Email"
+              )}
+            </Button>
+          </form>
+        </CardContent>
+        <CardFooter className="flex justify-between">
+          <Link
+            href={route("logout")}
+            method="post"
+            as="button"
+            className="text-sm text-primary underline-offset-4 transition-colors hover:underline"
+          >
+            Log Out
+          </Link>
+        </CardFooter>
       </Card>
     </GuestLayout>
   );
